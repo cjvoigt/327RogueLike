@@ -10,13 +10,19 @@
 #define Room_h
 
 #include <stdio.h>
-#include "Room.h"
+#include <stdlib.h>
+#include "Dungeon.h"
+#include "Constants.h"
 
 typedef struct Rooms {
+    int x;
+    int y;
     int width;
     int height;
 } Room;
 
 void drawRoom();
+Room getRandomRoom();
+bool checkOverlappingRoom();
 
 #endif /* Room_h */

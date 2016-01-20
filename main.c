@@ -7,16 +7,24 @@
 //
 
 #include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
 #include "Room.h"
+#include "Dungeon.h"
+#include "Constants.h"
 
 int main(int argc, const char * argv[]) {
-    
-    Room room;
-    
-    room.height = 12;
-    room.width = 4;
-    
-    drawRoom(room);
-    printf("\n");
+    srand(time(NULL));
+    fillDungeon();
+    Room rooms[5];
+    for(int i = 0; i < 5; i++) {
+        rooms[i] = getRandomRoom();
+        while(checkOverlappingRoom() == 0) {
+            rooms[i] =  getRandomRoom();
+        }
+        addRoom(rooms[i]);
+    }
+    drawDungeon(); 
+    printf("\n\n\n");
     return 0;
 }
