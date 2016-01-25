@@ -12,17 +12,18 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "Dungeon.h"
-#include "Constants.h"
 
-typedef struct Rooms {
+typedef struct room {
     int x;
     int y;
     int width;
     int height;
-} Room;
+    int centerX;
+    int centerY;
+    int timesVisited;
+} room_t;
 
-void drawRoom();
-Room getRandomRoom();
-bool checkOverlappingRoom();
+room_t getRandomRoom();
+int checkOverlappingRoom(room_t* room);
 
 #endif /* Room_h */

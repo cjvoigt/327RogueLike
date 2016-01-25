@@ -11,20 +11,37 @@
 #include <time.h>
 #include "Room.h"
 #include "Dungeon.h"
-#include "Constants.h"
+
+void createDungeon();
 
 int main(int argc, const char * argv[]) {
-    srand(time(NULL));
+    // set Seed
+    int t;
+    //srand(1453501536);
+    srand(t = time(NULL));
+    printf("seed: %d",t);
+    
+    //createDungeon
+    createDungeon();
+    
+    return 0;
+}
+
+void createDungeon() {
     fillDungeon();
-    Room rooms[5];
-    for(int i = 0; i < 5; i++) {
+    int numRooms = rand() % 5 + 6;
+    room_t rooms[numRooms];
+    for(int i = 0; i < numRooms; i++) {
         rooms[i] = getRandomRoom();
-        while(checkOverlappingRoom() == 0) {
+        while(checkOverlappingRoom(&rooms[i]) == 0) {
             rooms[i] =  getRandomRoom();
         }
         addRoom(rooms[i]);
     }
-    drawDungeon(); 
+    
+    for(int j = 0; j < numRooms-1; j++){
+        addCorridor(&rooms[j], &rooms[j+1]);
+    }
+    drawDungeon();
     printf("\n\n\n");
-    return 0;
 }

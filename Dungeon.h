@@ -11,12 +11,17 @@
 
 #include <stdio.h>
 #include "Room.h"
-#include "Constants.h"
 
-extern char dungeon[80][21];
+typedef struct cell {
+    char character;
+    int immutable;
+} cell_t;
+
+extern cell_t dungeon[80][21];
 
 void drawDungeon();
 void fillDungeon();
-bool addRoom();
+int addRoom();
+void addCorridor();
 
 #endif /* Dungeon_h */
