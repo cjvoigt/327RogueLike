@@ -11,4 +11,4 @@ room.o: Room.h Room.c
 	gcc -Wall -Werror -ggdb  room.c -c
 
 clean:
-	rm -f *.o fc
+	rm -f *.o main
