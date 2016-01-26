@@ -1,5 +1,5 @@
 main: main.o Dungeon.o Room.o
-	gcc main.o Dungeon.o Room.o -o all
+	gcc main.o Dungeon.o Room.o -o main
 
 main.o: main.c Room.h Dungeon.h
 	gcc -Wall -Werror -ggdb main.c -c
