@@ -1,9 +1,9 @@
 //
-//  main.c
-//  RogueLike
+// main.c
+// RogueLike
 //
-//  Created by Camden Voigt on 1/17/16.
-//  Copyright © 2016 Camden Voigt. All rights reserved.
+// Created by Camden Voigt on 1/17/16.
+// Copyright © 2016 Camden Voigt. All rights reserved.
 //
 
 #include <stdio.h>
@@ -15,11 +15,8 @@
 void createDungeon();
 
 int main(int argc, const char * argv[]) {
-    // set Seed
-    int t;
-    //srand(1453501536);
-    srand(t = time(NULL));
-    printf("seed: %d",t);
+    //set seed
+    srand( time(NULL));
     
     //createDungeon
     createDungeon();

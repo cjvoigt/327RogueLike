@@ -1,14 +1,14 @@
-all: main.o dungeon.o room.o
-	gcc main.o dungeon.o room. -o all
+all: main.o Dungeon.o Room.o
+	gcc main.o Dungeon.o Room.o -o all
 
-main.o: main.c room.h dungeon.h
+main.o: main.c Room.h Dungeon.h
 	gcc -Wall -Werror -ggdb main.c -c
 
-dungeon.o: dungeon.c dungeon.h room.h
+dungeon.o: Dungeon.c Dungeon.h Room.h
 	gcc -Wall -Werror -ggdb dungeon.c -c
 
-room.o: room.h room.c
-	gcc -Wall -Werror -ggdb room.c -c
+room.o: Room.h Room.c
+	gcc -Wall -Werror -ggdb  room.c -c
 
 clean:
 	rm -f *.o fc
