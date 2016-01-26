@@ -1,4 +1,4 @@
-all: main.o Dungeon.o Room.o
+main: main.o Dungeon.o Room.o
 	gcc main.o Dungeon.o Room.o -o all
 
 main.o: main.c Room.h Dungeon.h
