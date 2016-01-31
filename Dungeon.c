@@ -209,6 +209,7 @@ void saveDungeon(int numRooms, room_t *rooms) {
 
     char* fullPath = getFilePath();
     FILE* fp = fopen(fullPath , "wb+");
+    free(fullPath);
     
     //write file marker
     fwrite(fileMarker, 1, sizeof(fileMarker) - 1, fp);
@@ -245,6 +246,7 @@ void loadDungeon(int* numRooms, room_t* rooms) {
     //open file
     char* fullPath = getFilePath();
     FILE* fp = fopen(fullPath , "rb+");
+    free(fullPath);
     
     //Get FileMarker
     char fileMarker[7];
