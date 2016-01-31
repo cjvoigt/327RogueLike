@@ -1,6 +1,14 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [0.2] - 2016-1-31
+### Added
+— Saving dungeons
+- Loading Dungeons
+
+### Changed
+- Each cell now has a rock hardness
+
 ## [0.1] - 2016-1-25
 ### Added
 - Dungeon generation
