@@ -50,9 +50,11 @@ void setUp(int argc, char * argv[]) {
         } else if (strcmp(argv[1], "--save") == 0 && strcmp(argv[2], "--load") == 0) {
             int numRooms = 0;
             room_t rooms[15];
-            loadDungeon(&numRooms, rooms);
-            drawDungeon();
-            saveDungeon(numRooms, rooms);
+            int success = loadDungeon(&numRooms, rooms);
+            if(success != -1) {
+                drawDungeon();
+                saveDungeon(numRooms, rooms);
+            }
         } else {
             printf("Error: Don't understand tags %s and %s", argv[1], argv[2]);
         }

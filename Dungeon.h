@@ -29,6 +29,6 @@ void createDungeon();
 int addRoom();
 void addCorridor();
 void saveDungeon();
-void loadDungeon();
+int loadDungeon();
 
 #endif /* Dungeon_h */

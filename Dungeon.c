@@ -210,6 +210,11 @@ void saveDungeon(int numRooms, room_t *rooms) {
     char* fullPath = getFilePath();
     FILE* fp = fopen(fullPath , "wb+");
     free(fullPath);
+
+    if(fp == NULL) {
+       printf("File could not be found for saving");
+       return;
+    }
     
     //write file marker
     fwrite(fileMarker, 1, sizeof(fileMarker) - 1, fp);
@@ -244,14 +249,15 @@ void saveDungeon(int numRooms, room_t *rooms) {
     fclose(fp);
 }
 
-void loadDungeon(int* numRooms, room_t* rooms) {
+int loadDungeon(int* numRooms, room_t* rooms) {
     //open file
     char* fullPath = getFilePath();
     FILE* fp = fopen(fullPath , "rb+");
     free(fullPath);
 
     if(fp == NULL) {
-        return;
+        printf("File Cannot be found for loading");
+        return -1;
     }
     
     //Get FileMarker
@@ -292,6 +298,7 @@ void loadDungeon(int* numRooms, room_t* rooms) {
     redrawDungeon();
     
     fclose(fp);
+    return 0;
 }
 
 char* getFilePath() {
