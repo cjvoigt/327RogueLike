@@ -249,6 +249,10 @@ void loadDungeon(int* numRooms, room_t* rooms) {
     char* fullPath = getFilePath();
     FILE* fp = fopen(fullPath , "rb+");
     free(fullPath);
+
+    if(fp == NULL) {
+        return;
+    }
     
     //Get FileMarker
     char fileMarker[7];
