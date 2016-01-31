@@ -20,7 +20,6 @@ typedef struct room {
     int height;
     int centerX;
     int centerY;
-    int timesVisited;
 } room_t;
 
 room_t getRandomRoom();

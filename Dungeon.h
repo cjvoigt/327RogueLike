@@ -10,18 +10,24 @@
 #define Dungeon_h
 
 #include <stdio.h>
+#include <string.h>
+#include <machine/endian.h>
 #include "Room.h"
 
 typedef struct cell {
     char character;
     int immutable;
+    int hardness;
 } cell_t;
 
 extern cell_t dungeon[80][21];
 
 void drawDungeon();
 void fillDungeon();
+void createDungeon();
 int addRoom();
 void addCorridor();
+void saveDungeon();
+void loadDungeon();
 
 #endif /* Dungeon_h */
