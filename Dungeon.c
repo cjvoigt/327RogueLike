@@ -212,7 +212,7 @@ void saveDungeon(int numRooms, room_t *rooms) {
     free(fullPath);
 
     if(fp == NULL) {
-       printf("File could not be found for saving");
+       printf("File could not be found for saving\n");
        return;
     }
     
@@ -256,7 +256,7 @@ int loadDungeon(int* numRooms, room_t* rooms) {
     free(fullPath);
 
     if(fp == NULL) {
-        printf("File Cannot be found for loading");
+        printf("File Cannot be found for loading\n");
         return -1;
     }
     
