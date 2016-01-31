@@ -10,8 +10,9 @@
 #define Dungeon_h
 
 #include <stdio.h>
+#include <stdint.h>
 #include <string.h>
-#include <machine/endian.h>
+#include <endian.h>
 #include "Room.h"
 
 typedef struct cell {
