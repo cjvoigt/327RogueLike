@@ -8,6 +8,11 @@ All notable changes to this project will be documented in this file.
 
 ### Changed
 - Each cell now has a rock hardness
+- Room.h only has room struct now
+
+### Removed
+- Room.c file
+- All functions now in Dungeon
 
 ## [0.1] - 2016-1-25
 ### Added

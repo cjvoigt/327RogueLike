@@ -9,9 +9,7 @@
 #ifndef Room_h
 #define Room_h
 
-#include <stdio.h>
 #include <stdlib.h>
-#include "Dungeon.h"
 
 typedef struct room {
     int x;
@@ -21,8 +19,5 @@ typedef struct room {
     int centerX;
     int centerY;
 } room_t;
-
-room_t getRandomRoom();
-int checkOverlappingRoom(room_t* room);
 
 #endif /* Room_h */
