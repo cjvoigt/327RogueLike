@@ -7,8 +7,5 @@ main.o: main.c Room.h Dungeon.h
 dungeon.o: Dungeon.c Dungeon.h Room.h
 	gcc -Wall -Werror -ggdb dungeon.c -c
 
-room.o: Room.h
-	gcc -Wall -Werror -ggdb  room.c -c
-
 clean:
 	rm -f *.o main
