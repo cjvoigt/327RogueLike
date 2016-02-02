@@ -10,6 +10,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include <curses.h>
 #include "Room.h"
 #include "Dungeon.h"
 
@@ -43,17 +44,19 @@ void setUp(int argc, char * argv[]) {
     } else if(argc == 3) {
         if(strcmp(argv[1], "--load") == 0 && strcmp(argv[2], "--save") == 0) {
             int numRooms = 0;
-            room_t rooms[15];
-            loadDungeon(&numRooms, rooms);
-            drawDungeon();
-            saveDungeon(numRooms, rooms);
-        } else if (strcmp(argv[1], "--save") == 0 && strcmp(argv[2], "--load") == 0) {
-            int numRooms = 0;
-            room_t rooms[15];
-            int success = loadDungeon(&numRooms, rooms);
-            if(success != -1) {
+            room_t* rooms = loadDungeon(&numRooms);
+            if(rooms != NULL) {
                 drawDungeon();
                 saveDungeon(numRooms, rooms);
+                free(rooms);
+            }
+        } else if (strcmp(argv[1], "--save") == 0 && strcmp(argv[2], "--load") == 0) {
+            int numRooms = 0;
+            room_t* rooms = loadDungeon(&numRooms);
+            if(rooms != NULL) {
+                drawDungeon();
+                saveDungeon(numRooms, rooms);
+                free(rooms);
             }
         } else {
             printf("Error: Don't understand tags %s and %s", argv[1], argv[2]);
@@ -63,6 +66,6 @@ void setUp(int argc, char * argv[]) {
     } else  {
         int numRooms = rand() % 5 + 6;
         room_t rooms[numRooms];
-        createDungeon(numRooms, &rooms);
+        createDungeon(numRooms, rooms);
     }
 }

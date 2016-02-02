@@ -12,7 +12,7 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <string.h>
-#include <endian.h>
+//#include <endian.h>
 #include "Room.h"
 
 typedef struct cell {
@@ -24,11 +24,21 @@ typedef struct cell {
 extern cell_t dungeon[80][21];
 
 void drawDungeon();
+
 void fillDungeon();
-void createDungeon();
+
+void createDungeon(int numRooms, room_t* rooms);
+
 int addRoom();
-void addCorridor();
-void saveDungeon();
-int loadDungeon();
+
+room_t getRandomRoom();
+
+int checkOverlappingRoom(room_t* room);
+
+void addCorridor(room_t *startRoom, room_t *endRoom);
+
+void saveDungeon(int numRooms, room_t *rooms);
+
+room_t* loadDungeon();
 
 #endif /* Dungeon_h */
