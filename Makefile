@@ -1,5 +1,5 @@
-main: main.o Dungeon.o Room.o
-	gcc main.o Dungeon.o Room.o -o main
+main: main.o Dungeon.o
+	gcc main.o Dungeon.o -o main
 
 main.o: main.c Room.h Dungeon.h
 	gcc -Wall -Werror -ggdb main.c -c
@@ -7,7 +7,7 @@ main.o: main.c Room.h Dungeon.h
 dungeon.o: Dungeon.c Dungeon.h Room.h
 	gcc -Wall -Werror -ggdb dungeon.c -c
 
-room.o: Room.h Room.c
+room.o: Room.h
 	gcc -Wall -Werror -ggdb  room.c -c
 
 clean:
