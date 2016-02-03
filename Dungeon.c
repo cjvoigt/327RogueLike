@@ -346,7 +346,7 @@ room_t* loadDungeon(int* numRooms) {
 
 char* getFilePath() {
     char* homePath = getenv("HOME");
-    char* filePath = "/.rlg327/dungeon.rlg327";
+    char* filePath = "/.rlg327/dungeon";
     long length = strlen(homePath) + strlen(filePath) + 1;
     char* fullPath = malloc(length);
     snprintf(fullPath, length, "%s%s", homePath, filePath);
