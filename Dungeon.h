@@ -12,7 +12,7 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <string.h>
-//#include <endian.h>
+#include <endian.h>
 #include "Room.h"
 
 typedef struct cell {

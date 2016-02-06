@@ -20,9 +20,8 @@ void printDistance(position_t* array[][21]);
 void deleteDistanceDungeon(position_t* positions[][21]);
 int adjustHardness(int current);
 
-pc_t* createPlayerCharacter(room_t* rooms, int numRooms) {
-    int roomIndex = rand() % numRooms;
-    room_t room = rooms[roomIndex];
+pc_t* createPlayerCharacter(room_t* rooms) {
+    room_t room = rooms[0];
     
     int adjustment = 1;
     if(room.height > 2) {

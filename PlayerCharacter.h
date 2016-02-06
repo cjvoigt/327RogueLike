@@ -29,7 +29,7 @@ typedef enum colors{
     black
 } colors_t;
 
-pc_t* createPlayerCharacter(room_t* rooms, int numRooms);
+pc_t* createPlayerCharacter(room_t* rooms);
 
 void drawPlayerCharacter(pc_t* pc);
 

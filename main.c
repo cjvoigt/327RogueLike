@@ -22,7 +22,7 @@ int main(int argc, char* argv[]) {
     
     int numRooms;
     room_t* rooms = setUp(argc, argv, &numRooms);
-    pc_t* pc = createPlayerCharacter(rooms, numRooms);
+    pc_t* pc = createPlayerCharacter(rooms);
     drawPlayerCharacter(pc);
     distanceToPlayerNoTunneling(pc);
     distanceToPlayerTunneling(pc);
@@ -51,13 +51,11 @@ room_t* setUp(int argc, char* argv[], int* numRooms) {
             rooms = loadDungeon(numRooms);
             if(rooms != NULL) {
                 saveDungeon(*numRooms, rooms);
-                free(rooms);
             }
         } else if (strcmp(argv[1], "--save") == 0 && strcmp(argv[2], "--load") == 0) {
             rooms = loadDungeon(numRooms);
             if(rooms != NULL) {
                 saveDungeon(*numRooms, rooms);
-                free(rooms);
             }
         } else {
             printf("Error: Don't understand tags %s and %s", argv[1], argv[2]);
