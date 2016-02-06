@@ -6,7 +6,7 @@
 //  Copyright © 2016 Camden Voigt. All rights reserved.
 //
 
-#include "PlayerCharcter.h"
+#include "PlayerCharacter.h"
 
 typedef struct position {
     int x;

@@ -6,8 +6,8 @@
 //  Copyright © 2016 Camden Voigt. All rights reserved.
 //
 
-#ifndef PlayerCharcter_h
-#define PlayerCharcter_h
+#ifndef PlayerCharacter_h
+#define PlayerCharacter_h
 
 #define INFINITY 255
 

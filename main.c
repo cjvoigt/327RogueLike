@@ -13,7 +13,7 @@
 #include <curses.h>
 #include "Room.h"
 #include "Dungeon.h"
-#include "PlayerCharcter.h"
+#include "PlayerCharacter.h"
 
 room_t* setUp(int argc, char * argv[], int* numRooms);
 
