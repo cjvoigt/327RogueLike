@@ -16,16 +16,16 @@ void getPoint(room_t *startRoom, room_t *nextRoom, int *x, int *y);
 int findCenter(int num);
 int goHorizontal(int startX, int endX, int *y);
 void goVertical(int startY, int endY, int x);
-int turn();
+int turn(int currentY);
 char* getFilePath();
 void redrawDungeon();
 
 #pragma mark - Full Dungeon
 
 void drawDungeon() {
-    int i = 0, j = 0;
+    int i, j;
     
-    for(;i<21; i++) {
+    for(i = 0;i<21; i++) {
         for(j = 0;j<80; j++) {
             printf("%c", dungeon[j][i].character);
         }
@@ -42,6 +42,7 @@ void fillDungeon() {
             dungeon[j][i].hardness = rand() % 254 + 1;
             if (i == 0 || i == 20 || j == 0 || j == 79){
                 dungeon[j][i].immutable = 1;
+                dungeon[j][i].hardness = 255;
             } else {
                 dungeon[j][i].immutable = 0;
             }
@@ -61,7 +62,6 @@ void createDungeon(int numRooms, room_t* rooms) {
     for(int j = 0; j < numRooms-1; j++){
         addCorridor(&rooms[j], &rooms[j+1]);
     }
-    drawDungeon();
     printf("\n\n\n");
 }
 
@@ -174,7 +174,7 @@ int goHorizontal(int startX, int endX, int *y) {
                 dungeon[i][*y].character = '#';
                 dungeon[i][*y].hardness = 0;
             }
-            int newY = turn();
+            int newY = turn(*y);
             
             if(newY != 0 ) {
                 *y += newY;
@@ -190,7 +190,7 @@ int goHorizontal(int startX, int endX, int *y) {
                 dungeon[i][*y].character = '#';
                 dungeon[i][*y].hardness = 0;
             }
-            int newY = turn();
+            int newY = turn(*y);
             
             if(newY != 0 ) {
                 *y += newY;
@@ -229,12 +229,20 @@ void goVertical(int startY, int endY, int x) {
     }
 }
 
-int turn(){
+int turn(int currentY){
     int num = rand() % 20;
     if (num == 2) {
-        return 1;
+        if (currentY != 19) {
+           return 1;
+        } else {
+            return 0;
+        }
     } else if (num == 3) {
-        return -1;
+        if (currentY != 1) {
+            return -1;
+        } else {
+            return 0;
+        }
     } else {
         return 0;
     }
@@ -247,7 +255,7 @@ void saveDungeon(int numRooms, room_t *rooms) {
     char fileMarker[] = "RLG327";
     uint32_t version = 0;
     uint32_t size = 1496 + (numRooms * 4);
-    uint32_t besize = 0, beversion = 0;
+    //uint32_t besize = 0, beversion = 0;
 
     char* fullPath = getFilePath();
     FILE* fp = fopen(fullPath , "wb+");
@@ -262,12 +270,12 @@ void saveDungeon(int numRooms, room_t *rooms) {
     fwrite(fileMarker, 1, sizeof(fileMarker) - 1, fp);
     
     //write version number
-    beversion = htobe32(version);
-    fwrite(&beversion, sizeof(version), 1, fp);
+    //beversion = htobe32(version);
+    fwrite(&version, sizeof(version), 1, fp);
     
     //write size
-    besize = htobe32(size);
-    fwrite(&besize, sizeof(size), 1, fp);
+    //besize = htobe32(size);
+    fwrite(&size, sizeof(size), 1, fp);
     
     //write dungeon
     int i, j;
@@ -307,12 +315,12 @@ room_t* loadDungeon(int* numRooms) {
     fread(fileMarker, 1, sizeof(fileMarker) - 1, fp);
     
     //get version and size
-    uint32_t beversion, besize;
+    //uint32_t beversion, besize;
     uint32_t version, size;
-    fread(&beversion, 4, 1, fp);
-    fread(&besize, 4, 1, fp);
-    version = be32toh( beversion);
-    size = be32toh(besize);
+    fread(&version, 4, 1, fp);
+    fread(&size, 4, 1, fp);
+    //version = be32toh( beversion);
+    //size = be32toh(besize);
     
     //get dungeon
     int i, j;

@@ -1,6 +1,18 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+##[0.3] - 2016-2-6
+### Added
+- PlayerCharacter implementation and header files
+- Finding distances from player
+- Randomly placing player in a room
+
+## Changed
+- Things passed into start up function are now pointers
+
+## Bugs
+- Fixed a bug where rooms wouldn’t be connected
+
 ## [0.2] - 2016-1-31
 ### Added
 — Saving dungeons
