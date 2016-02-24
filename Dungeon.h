@@ -13,7 +13,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdint.h>
-//#include <endian.h>
+#include <endian.h>
 
 #include "utils.h"
 

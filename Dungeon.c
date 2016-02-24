@@ -287,7 +287,7 @@ void saveDungeon(int numRooms, room_t *rooms) {
     char fileMarker[] = "RLG327";
     uint32_t version = 0;
     uint32_t size = 1496 + (numRooms * 4);
-    //uint32_t besize = 0, beversion = 0;
+    uint32_t besize = 0, beversion = 0;
 
     char* fullPath = getFilePath();
     FILE* fp = fopen(fullPath , "wb+");
@@ -302,12 +302,12 @@ void saveDungeon(int numRooms, room_t *rooms) {
     fwrite(fileMarker, 1, sizeof(fileMarker) - 1, fp);
     
     //write version number
-    //beversion = htobe32(version);
-    fwrite(&version, sizeof(version), 1, fp);
+    beversion = htobe32(version);
+    fwrite(&version, sizeof(beversion), 1, fp);
     
     //write size
-    //besize = htobe32(size);
-    fwrite(&size, sizeof(size), 1, fp);
+    besize = htobe32(size);
+    fwrite(&size, sizeof(besize), 1, fp);
     
     //write dungeon
     int i, j;
@@ -347,12 +347,12 @@ room_t* loadDungeon(int* numRooms) {
     fread(fileMarker, 1, sizeof(fileMarker) - 1, fp);
     
     //get version and size
-    //uint32_t beversion, besize;
+    uint32_t beversion, besize;
     uint32_t version, size;
-    fread(&version, 4, 1, fp);
-    fread(&size, 4, 1, fp);
-    //version = be32toh(beversion);
-    //size = be32toh(besize);
+    fread(&beversion, 4, 1, fp);
+    fread(&besize, 4, 1, fp);
+    version = be32toh(beversion);
+    size = be32toh(besize);
     
     //get dungeon
     int i, j;

@@ -1,10 +1,10 @@
 main: main.o Dungeon.o PlayerCharacter.o binheap.o Monster.o
 	gcc -Wall -Werror  main.o Dungeon.o PlayerCharacter.o binheap.o Monster.o -o main
 
-main.o: main.c Room.h Dungeon.h
+main.o: main.c Dungeon.h
 	gcc -ggdb main.c -c
 
-dungeon.o: Dungeon.c Dungeon.h Room.h
+dungeon.o: Dungeon.c Dungeon.h
 	gcc -ggdb Dungeon.c -c
 
 playercharacter.o: PlayerCharacter.h PlayerCharacter.c utils.h Dungeon.h
