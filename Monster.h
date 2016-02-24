@@ -24,7 +24,7 @@ typedef struct position {
 
 /* Monster Creation */
 monster_t* createMonster(room_t* rooms, int numRooms);
-character_t* monsterAsCharacter(monster_t* monster, int num);
+character_t monsterAsCharacter(monster_t* monster, int num);
 
 /* Monster Movement */
 void moveMonster(monster_t* monster, pc_t* pc);

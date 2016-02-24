@@ -12,6 +12,7 @@
 #include <time.h>
 #include <ncurses.h>
 #include <unistd.h>
+#include <limits.h>
 
 #include "utils.h"
 #include "Dungeon.h"
@@ -31,10 +32,10 @@ void freeCharacter(void* key);
 int main(int argc, char* argv[]) {
     int numRooms, numMonsters;
     
-    //srand(time(NULL));
-    int t;
-    srand(t = time(NULL));
-    printf("%d", t);
+    srand(1456299808);
+    //int t;
+    //srand(t = time(NULL));
+    //printf("%d", t);
     room_t* rooms = setUp(argc, argv, &numRooms, &numMonsters);
     pc_t* pc = createPlayerCharacter(rooms);
     character_t* players = setUpPlayers(numMonsters, pc, numRooms, rooms);
@@ -59,6 +60,8 @@ int main(int argc, char* argv[]) {
             drawDungeon();
         } else if (character->charID.monster->dead == 1) {
             numMonsters--;
+						character->turn = INT_MAX;
+						binheap_insert(&pqueue, character);
         }
     }
     
@@ -138,10 +141,10 @@ room_t* handleArgs(int* array, int* numRooms, int* numMonsters) {
 
 character_t* setUpPlayers(int numMonsters, pc_t* pc, int numRooms, room_t* rooms) {
     character_t* players = malloc(sizeof(character_t) * (numMonsters+1));
-    players[0] = *playerAsCharacter(pc);
+    players[0] = playerAsCharacter(pc);
     for(int i = 1; i < numMonsters + 1; i++) {
         monster_t* monster = createMonster(rooms, numRooms);
-        players[i] = *monsterAsCharacter(monster, i);
+        players[i] = monsterAsCharacter(monster, i);
     }
     
     return players;

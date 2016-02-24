@@ -18,7 +18,7 @@
 
 /* Player Creation */
 pc_t* createPlayerCharacter(room_t* rooms);
-character_t* playerAsCharacter(pc_t* pc);
+character_t  playerAsCharacter(pc_t* pc);
 
 /* Player Movement */
 void movePlayer(pc_t* pc);
