@@ -1,23 +1,20 @@
-main: main.o Dungeon.o playercharacter.o binheap.o
-	gcc -Wall -Werror  main.o Dungeon.o PlayerCharacter.o binheap.o monster.o utils.o -o main
+main: main.o Dungeon.o PlayerCharacter.o binheap.o Monster.o
+	gcc -Wall -Werror  main.o Dungeon.o PlayerCharacter.o binheap.o Monster.o -o main
 
 main.o: main.c Room.h Dungeon.h
-	gcc -Wall -Werror -ggdb main.c -c
+	gcc -ggdb main.c -c
 
 dungeon.o: Dungeon.c Dungeon.h Room.h
-	gcc -Wall -Werror -ggdb Dungeon.c -c
+	gcc -ggdb Dungeon.c -c
 
 playercharacter.o: PlayerCharacter.h PlayerCharacter.c utils.h Dungeon.h
-	gcc -Wall -Werror -ggdb PlayerCharacter.c -c
+	gcc -ggdb PlayerCharacter.c -c
 
 binheap.o: binheap.h binheap.c
-	gcc -Wall -Werror -ggdb binheap.c -c
+	gcc -ggdb binheap.c -c
 
 monster.o: Monster.h Monster.c utils.h Dungeon.c
-	gcc -Wall -Werror -ggdb Monster.c -c
-
-utils.o: utils.h
-	gcc -Wall -Werror -ggdb utils.h -c
+	gcc -ggdb Monster.c -c
 
 clean:
 	rm -f *.o main
