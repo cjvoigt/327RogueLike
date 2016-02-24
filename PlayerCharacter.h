@@ -9,32 +9,18 @@
 #ifndef PlayerCharacter_h
 #define PlayerCharacter_h
 
-#define INFINITY 255
-
 #include <stdio.h>
 #include <stdint.h>
+
+#include "utils.h"
 #include "binheap.h"
-#include "Room.h"
 #include "Dungeon.h"
 
-typedef struct pc {
-    int x;
-    int y;
-    char standingOn;
-} pc_t;
-
-typedef enum colors{
-    white,
-    gray,
-    black
-} colors_t;
-
+/* Player Creation */
 pc_t* createPlayerCharacter(room_t* rooms);
+character_t* playerAsCharacter(pc_t* pc);
 
-void drawPlayerCharacter(pc_t* pc);
-
-void distanceToPlayerNoTunneling(pc_t* pc);
-
-void distanceToPlayerTunneling(pc_t* pc);
+/* Player Movement */
+void movePlayer(pc_t* pc);
 
 #endif /* PlayerCharcter_h */

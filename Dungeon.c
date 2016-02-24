@@ -12,6 +12,7 @@ cell_t dungeon[80][21];
 
 #pragma mark - Prototypes
 
+char getMonsterChar(int monsterID);
 void getPoint(room_t *startRoom, room_t *nextRoom, int *x, int *y);
 int findCenter(int num);
 int goHorizontal(int startX, int endX, int *y);
@@ -27,9 +28,34 @@ void drawDungeon() {
     
     for(i = 0;i<21; i++) {
         for(j = 0;j<80; j++) {
-            printf("%c", dungeon[j][i].character);
+            if(dungeon[j][i].character.type == player) {
+                printf("@");
+            } else if (dungeon[j][i].character.type == mon) {
+                printf("%c", getMonsterChar(dungeon[j][i].character.charID.monster->behavior));
+            } else {
+                printf("%c", dungeon[j][i].type);
+            }
         }
         printf("\n");
+    }
+}
+
+char getMonsterChar(int monsterID) {
+    switch (monsterID) {
+        case MONSTERA:
+            return 'A';
+        case MONSTERB:
+            return 'B';
+        case MONSTERC:
+            return 'C';
+        case MONSTERD:
+            return 'D';
+        case MONSTERE:
+            return 'E';
+        case MONSTERF:
+            return 'F';
+        default:
+            return monsterID + '0';
     }
 }
 
@@ -38,7 +64,7 @@ void fillDungeon() {
     
     for(i = 0;i<21; i++) {
         for(j = 0;j<80; j++) {
-            dungeon[j][i].character = ' ';
+            dungeon[j][i].type = ' ';
             dungeon[j][i].hardness = rand() % 254 + 1;
             if (i == 0 || i == 20 || j == 0 || j == 79){
                 dungeon[j][i].immutable = 1;
@@ -46,12 +72,17 @@ void fillDungeon() {
             } else {
                 dungeon[j][i].immutable = 0;
             }
+            dungeon[j][i].character.charID.player = NULL;
+            dungeon[j][i].character.charID.monster = NULL;
+            dungeon[j][i].character.type = none;
         }
     }
 }
 
 void createDungeon(int numRooms, room_t* rooms) {
-    for(int i = 0; i < numRooms; i++) {
+    int i, j;
+    
+    for(i = 0; i < numRooms; i++) {
         rooms[i] = getRandomRoom();
         while(checkOverlappingRoom(&rooms[i]) == 0) {
             rooms[i] =  getRandomRoom();
@@ -59,9 +90,10 @@ void createDungeon(int numRooms, room_t* rooms) {
         addRoom(rooms[i]);
     }
     
-    for(int j = 0; j < numRooms-1; j++){
+    for(j = 0; j < numRooms-1; j++){
         addCorridor(&rooms[j], &rooms[j+1]);
     }
+    
     printf("\n\n\n");
 }
 
@@ -72,7 +104,7 @@ int addRoom(room_t *room) {
     
     for(;i<endY;i++) {
         for(j = room->x;j<endX;j++) {
-            dungeon[j][i].character = '.';
+            dungeon[j][i].type = '.';
             dungeon[j][i].immutable = 1;
             dungeon[j][i].hardness = 0;
         }
@@ -112,7 +144,7 @@ int checkOverlappingRoom(room_t *room) {
 }
 
 int findCenter(int num) {
-    if (num%2 == 1) {
+    if (num % 2 == 1) {
         return (num/2) +1;
     } else {
         return num/2;
@@ -134,7 +166,7 @@ void addCorridor(room_t *startRoom, room_t *endRoom) {
     goVertical(startY, endY, x);
 }
 
-void getPoint(room_t *startRoom, room_t *nextRoom, int *x, int *y) {
+void getPoint(room_t* startRoom, room_t* nextRoom, int* x, int* y) {
     int disX = abs(startRoom->centerX - nextRoom->centerX);
     int disY = abs(startRoom->centerY - nextRoom->centerY);
     
@@ -171,7 +203,7 @@ int goHorizontal(int startX, int endX, int *y) {
     if (startX < endX) {
         for(i = startX; i <= endX; i++){
             if(dungeon[i][*y].immutable != 1) {
-                dungeon[i][*y].character = '#';
+                dungeon[i][*y].type = '#';
                 dungeon[i][*y].hardness = 0;
             }
             int newY = turn(*y);
@@ -179,7 +211,7 @@ int goHorizontal(int startX, int endX, int *y) {
             if(newY != 0 ) {
                 *y += newY;
                 if(dungeon[i][*y].immutable != 1) {
-                    dungeon[i][*y].character = '#';
+                    dungeon[i][*y].type = '#';
                     dungeon[i][*y].hardness = 0;
                 }
             }
@@ -187,7 +219,7 @@ int goHorizontal(int startX, int endX, int *y) {
     } else if (startX >= endX) {
         for(i = startX; i > endX; i--) {
             if(dungeon[i][*y].immutable != 1) {
-                dungeon[i][*y].character = '#';
+                dungeon[i][*y].type = '#';
                 dungeon[i][*y].hardness = 0;
             }
             int newY = turn(*y);
@@ -195,7 +227,7 @@ int goHorizontal(int startX, int endX, int *y) {
             if(newY != 0 ) {
                 *y += newY;
                 if(dungeon[i][*y].immutable != 1) {
-                    dungeon[i][*y].character = '#';
+                    dungeon[i][*y].type = '#';
                     dungeon[i][*y].hardness = 0;
                 }
             }
@@ -213,14 +245,14 @@ void goVertical(int startY, int endY, int x) {
     if (startY > endY) {
         for(i = startY; i >= endY; i--) {
             if(dungeon[x][i].immutable != 1) {
-                dungeon[x][i].character ='#';
+                dungeon[x][i].type ='#';
                 dungeon[x][i].hardness = 0;
             }
         }
     } else if (startY < endY) {
         for(i = startY; i <= endY; i++) {
             if(dungeon[x][i].immutable != 1) {
-                dungeon[x][i].character ='#';
+                dungeon[x][i].type ='#';
                 dungeon[x][i].hardness = 0;
             }
         }
@@ -255,7 +287,7 @@ void saveDungeon(int numRooms, room_t *rooms) {
     char fileMarker[] = "RLG327";
     uint32_t version = 0;
     uint32_t size = 1496 + (numRooms * 4);
-    uint32_t besize = 0, beversion = 0;
+    //uint32_t besize = 0, beversion = 0;
 
     char* fullPath = getFilePath();
     FILE* fp = fopen(fullPath , "wb+");
@@ -270,12 +302,12 @@ void saveDungeon(int numRooms, room_t *rooms) {
     fwrite(fileMarker, 1, sizeof(fileMarker) - 1, fp);
     
     //write version number
-    beversion = htobe32(version);
-    fwrite(&beversion, sizeof(version), 1, fp);
+    //beversion = htobe32(version);
+    fwrite(&version, sizeof(version), 1, fp);
     
     //write size
-    besize = htobe32(size);
-    fwrite(&besize, sizeof(size), 1, fp);
+    //besize = htobe32(size);
+    fwrite(&size, sizeof(size), 1, fp);
     
     //write dungeon
     int i, j;
@@ -315,12 +347,12 @@ room_t* loadDungeon(int* numRooms) {
     fread(fileMarker, 1, sizeof(fileMarker) - 1, fp);
     
     //get version and size
-    uint32_t beversion, besize;
+    //uint32_t beversion, besize;
     uint32_t version, size;
-    fread(&beversion, 4, 1, fp);
-    fread(&besize, 4, 1, fp);
-    version = be32toh( beversion);
-    size = be32toh(besize);
+    fread(&version, 4, 1, fp);
+    fread(&size, 4, 1, fp);
+    //version = be32toh(beversion);
+    //size = be32toh(besize);
     
     //get dungeon
     int i, j;
@@ -366,7 +398,7 @@ void redrawDungeon() {
     for(i = 0; i < 21; i++) {
         for(j = 0; j < 80; j++) {
             if(dungeon[j][i].hardness == 0 && dungeon[j][i].immutable == 0) {
-                dungeon[j][i].character = '#';
+                dungeon[j][i].type = '#';
             }
         }
     }

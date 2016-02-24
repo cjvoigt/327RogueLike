@@ -10,35 +10,37 @@
 #define Dungeon_h
 
 #include <stdio.h>
-#include <stdint.h>
+#include <stdlib.h>
 #include <string.h>
-#include <endian.h>
-#include "Room.h"
+#include <stdint.h>
+//#include <endian.h>
+
+#include "utils.h"
 
 typedef struct cell {
-    char character;
+    char type;
     int immutable;
     int hardness;
+    character_t character;
 } cell_t;
 
 extern cell_t dungeon[80][21];
 
+/* Full Dungeon */
 void drawDungeon();
-
 void fillDungeon();
-
 void createDungeon(int numRooms, room_t* rooms);
 
+/* Rooms */
 int addRoom();
-
 room_t getRandomRoom();
-
 int checkOverlappingRoom(room_t* room);
 
+/* Corridors */
 void addCorridor(room_t *startRoom, room_t *endRoom);
 
+/* File I/O */
 void saveDungeon(int numRooms, room_t *rooms);
-
 room_t* loadDungeon();
 
 #endif /* Dungeon_h */

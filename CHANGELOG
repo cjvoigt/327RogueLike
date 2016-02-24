@@ -1,6 +1,23 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+##[0.4] - 2016-2-23
+### Adde
+- Monster implementation and header files
+- Monsters spawns
+- Monster Chases player
+- Nummon switch to add in certain amounts of monsters
+- PlayerCharacter now moves around at random
+- Priority Queue for so the monster and player go at the right time
+
+##Changed
+- Moved distance for player to monster
+- Moved a lot of structs to utils.h
+- Restructured some code to make it work better
+
+##Bugs
+- Still need to implement all of the Monsters
+
 ##[0.3] - 2016-2-6
 ### Added
 - PlayerCharacter implementation and header files
