@@ -55,13 +55,13 @@ monster_t* createMonster(room_t* rooms, int numRooms) {
     return monster;
 }
 
-character_t* monsterAsCharacter(monster_t* monster, int num) {
-    character_t* character = malloc(sizeof(character_t));
-    character->type = mon;
-    character->sequence = num;
-    character->speed = (rand() % 16) + 5;
-    character->turn = 0;
-    character->charID.monster = monster;
+character_t monsterAsCharacter(monster_t* monster, int num) {
+    character_t character;
+    character.type = mon;
+    character.sequence = num;
+    character.speed = (rand() % 16) + 5;
+    character.turn = 0;
+    character.charID.monster = monster;
     return  character;
 }
 
@@ -352,11 +352,15 @@ void distanceToPlayerNoTunneling(pc_t* pc, int results[][21]) {
             if(dungeon[j][i].hardness == 0) {
                 distanceDungeon[j][i] = malloc(sizeof(position_t));
                 distanceDungeon[j][i]->distance = INFINITY;
+								distanceDungeon[j][i]->x = j;
+								distanceDungeon[j][i]->y = i;
                 results[j][i] = INFINITY;
                 colors[j][i] = white;
             } else {
                 distanceDungeon[j][i] = malloc(sizeof(position_t));
                 distanceDungeon[j][i]->distance = INFINITY;
+								distanceDungeon[j][i]->x = j;
+								distanceDungeon[j][i]->y = i;
                 results[j][i] = INFINITY;
                 colors[j][i] = black;
             }
@@ -365,13 +369,8 @@ void distanceToPlayerNoTunneling(pc_t* pc, int results[][21]) {
     
     distanceDungeon[pc->x][pc->y]->distance = 0;
     results[pc->x][pc->y] = 0;
-    position_t* p;
-    p = malloc(sizeof(position_t));
-    p->distance = 0;
-    p->x = pc->x;
-    p->y = pc->y;
     colors[pc->x][pc->y] = gray;
-    binheap_insert(&heap, p);
+    binheap_insert(&heap, distanceDungeon[pc->x][pc->y]);
     
     while(binheap_is_empty(&heap) == 0) {
         position_t* curPos = (position_t*) binheap_remove_min(&heap);
@@ -389,8 +388,8 @@ void distanceToPlayerNoTunneling(pc_t* pc, int results[][21]) {
             }
         }
     }
-	binheap_delete(&heap);
 	deleteDistanceDungeon(distanceDungeon);
+	binheap_delete(&heap);
 }
 
 void distanceToPlayerTunneling(pc_t* pc, int results[][21]) {
@@ -429,15 +428,15 @@ void distanceToPlayerTunneling(pc_t* pc, int results[][21]) {
                     position_t* next = distanceDungeon[i][j];
                     if(next->distance > curPos->distance + adjustHardness(dungeon[i][j].hardness)){
                         next->distance = curPos->distance + adjustHardness(dungeon[i][j].hardness);
-                        results[i][j] = curPos->distance + adjustHardness(dungeon[i][j].hardness);
-                        binheap_decrease_key(&heap, next->heapNode);
+																results[i][j] = curPos->distance + adjustHardness(dungeon[i][j].hardness);
+																binheap_decrease_key(&heap, next->heapNode);
                     }
                 }
             }
         }
     }
-	binheap_delete(&heap);
 	deleteDistanceDungeon(distanceDungeon);
+	binheap_delete(&heap);
 }
 
 void printDistance(position_t* array[][21]) {
@@ -478,8 +477,7 @@ void deleteDistanceDungeon(position_t* positions[][21]) {
     int i, j;
     for(i = 0; i < 21; i++){
         for(j = 0; j < 80; j++) {
-            position_t* p = positions[j][i];
-            free(p);
+            free(positions[j][i]);;
         }
     }
 }

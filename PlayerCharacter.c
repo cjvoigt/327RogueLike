@@ -27,18 +27,18 @@ pc_t* createPlayerCharacter(room_t* rooms) {
     pc->x = room.x + (rand() % (room.width - 2)) + 1;
     pc->y = room.y + (rand() % (room.height - adjustment)) + 1;
     pc->dead = 0;
-    dungeon[pc->x][pc->y].character = *playerAsCharacter(pc);
+    dungeon[pc->x][pc->y].character = playerAsCharacter(pc);
     
     return pc;
 }
 
-character_t* playerAsCharacter(pc_t* pc) {
-    character_t* character = malloc(sizeof(character_t));
-    character->type = player;
-    character->speed = 10;
-    character->sequence = 0;
-    character->turn = 0;
-    character->charID.player = pc;
+character_t playerAsCharacter(pc_t* pc) {
+    character_t character;
+    character.type = player;
+    character.speed = 10;
+    character.sequence = 0;
+    character.turn = 0;
+    character.charID.player = pc;
     return character;
 }
 
