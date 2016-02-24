@@ -381,19 +381,16 @@ void distanceToPlayerNoTunneling(pc_t* pc, int results[][21]) {
         for(i = curPos->x - 1; i <= curPos->x + 1; i++) {
             for(j = curPos->y - 1; j <= curPos->y + 1; j++) {
                 if(colors[i][j] == white) {
-                    position_t* next;
-                    next = malloc(sizeof(position_t));
-                    next->x = i;
-                    next->y = j;
-                    next->distance = curPos->distance + 1;
-                    distanceDungeon[i][j]->distance = next->distance;
-                    results[i][j] = next->distance;
-                    binheap_insert(&heap, next);
+                    distanceDungeon[i][j]->distance = curPos->distance + 1;;
+                    results[i][j] = curPos->distance + 1;
+                    binheap_insert(&heap, distanceDungeon[i][j]);
                     colors[i][j] = gray;
                 }
             }
         }
     }
+	binheap_delete(&heap);
+	deleteDistanceDungeon(distanceDungeon);
 }
 
 void distanceToPlayerTunneling(pc_t* pc, int results[][21]) {
@@ -439,6 +436,8 @@ void distanceToPlayerTunneling(pc_t* pc, int results[][21]) {
             }
         }
     }
+	binheap_delete(&heap);
+	deleteDistanceDungeon(distanceDungeon);
 }
 
 void printDistance(position_t* array[][21]) {
