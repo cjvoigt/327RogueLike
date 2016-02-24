@@ -303,11 +303,11 @@ void saveDungeon(int numRooms, room_t *rooms) {
     
     //write version number
     beversion = htobe32(version);
-    fwrite(&version, sizeof(beversion), 1, fp);
+    fwrite(&beversion, sizeof(beversion), 1, fp);
     
     //write size
     besize = htobe32(size);
-    fwrite(&size, sizeof(besize), 1, fp);
+    fwrite(&besize, sizeof(besize), 1, fp);
     
     //write dungeon
     int i, j;
