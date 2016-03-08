@@ -52,7 +52,19 @@ int main(int argc, char* argv[]) {
             if(character->type == player) {
                 int ch = getch();
                 if(ch == 60 || ch == 62) {
-                    setUpNewDungeon(&numRooms, rooms, &numMonsters, players, pc, &pqueue);
+                    fillDungeon();
+                    int temp[4] = {0, 0, 0, 0};
+                    binheap_delete(&pqueue);
+                    free(pc);
+                    free(players);
+                    free(rooms);
+                    rooms = handleArgs(temp, &numRooms, &numMonsters);
+                    pc = malloc(sizeof(pc_t));
+                    pc = createPlayerCharacter(rooms);
+                    players = setUpPlayers(numMonsters, pc, numRooms, rooms);
+                    binheap_init_from_array(&pqueue, players, sizeof(character_t), numMonsters + 1, compareCharacters, freeCharacter);
+                    drawDungeon();
+                    continue;
                 } else {
                     takeAction(ch, pc);
                 }
@@ -158,12 +170,14 @@ character_t* setUpPlayers(int numMonsters, pc_t* pc, int numRooms, room_t* rooms
 }
 
 void setUpNewDungeon(int* numRooms, room_t* rooms, int* numMonsters, character_t* players, pc_t* pc, binheap_t* pqueue) {
-    int temp[] = {0, 0, 0, 0};
+    fillDungeon();
+    int temp[4] = {0, 0, 0, 0};
     binheap_delete(pqueue);
-    free(players);
     free(pc);
+    free(players);
     free(rooms);
     rooms = handleArgs(temp, numRooms, numMonsters);
+    pc = malloc(sizeof(pc_t));
     pc = createPlayerCharacter(rooms);
     players = setUpPlayers(*numMonsters, pc, *numRooms, rooms);
     binheap_init_from_array(pqueue, players, sizeof(character_t), *numMonsters + 1, compareCharacters, freeCharacter);

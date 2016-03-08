@@ -32,6 +32,18 @@ pc_t* createPlayerCharacter(room_t* rooms) {
     return pc;
 }
 
+void changePos(pc_t* pc, room_t* rooms) {
+    room_t room = rooms[0];
+
+    int adjustment = 1;
+    if(room.height > 2) {
+        adjustment = 2;
+    }
+
+    pc->x = room.x + (rand() % (room.width - 2)) + 1;
+    pc->y = room.y + (rand() % (room.height - adjustment)) + 1;
+}
+
 character_t playerAsCharacter(pc_t* pc) {
     character_t character;
     character.type = player;

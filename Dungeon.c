@@ -25,20 +25,19 @@ void redrawDungeon();
 
 void drawDungeon() {
     int i, j;
-		clear(); 
+    clear(); 
     for(i = 0;i<21; i++) {
         for(j = 0;j<80; j++) {
             if(dungeon[j][i].character.type == player) {
-                printw("@");
+                mvprintw(i+1, j, "@");
             } else if (dungeon[j][i].character.type == mon) {
-                printw("%c", getMonsterChar(dungeon[j][i].character.charID.monster->behavior));
+                mvprintw(i+1, j, "%c", getMonsterChar(dungeon[j][i].character.charID.monster->behavior));
             } else {
-                printw("%c", dungeon[j][i].type);
+                mvprintw(i+1, j, "%c", dungeon[j][i].type);
             }
         }
-        printw("\n");
     }
-		refresh();
+    refresh();
 }
 
 char getMonsterChar(int monsterID) {
@@ -62,7 +61,7 @@ char getMonsterChar(int monsterID) {
 
 void fillDungeon() {
     int i, j;
-    
+
     for(i = 0;i<21; i++) {
         for(j = 0;j<80; j++) {
             dungeon[j][i].type = ' ';
