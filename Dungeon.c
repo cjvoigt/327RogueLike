@@ -25,19 +25,20 @@ void redrawDungeon();
 
 void drawDungeon() {
     int i, j;
-    
+		clear(); 
     for(i = 0;i<21; i++) {
         for(j = 0;j<80; j++) {
             if(dungeon[j][i].character.type == player) {
-                printf("@");
+                printw("@");
             } else if (dungeon[j][i].character.type == mon) {
-                printf("%c", getMonsterChar(dungeon[j][i].character.charID.monster->behavior));
+                printw("%c", getMonsterChar(dungeon[j][i].character.charID.monster->behavior));
             } else {
-                printf("%c", dungeon[j][i].type);
+                printw("%c", dungeon[j][i].type);
             }
         }
-        printf("\n");
+        printw("\n");
     }
+		refresh();
 }
 
 char getMonsterChar(int monsterID) {

@@ -44,33 +44,35 @@ character_t playerAsCharacter(pc_t* pc) {
 
 #pragma mark - Player Movement
 
-void movePlayer(pc_t* pc) {
-    int direction = rand() % 8;
+void movePlayer(pc_t* pc, int direction) {
     switch (direction) {
-        case 0:
+        case 121:
             swapPlayer(pc, -1, -1);
             break;
-        case 1:
+        case 107:
             swapPlayer(pc, 0, -1);
             break;
-        case 2:
+        case 117:
             swapPlayer(pc, 1, -1);
             break;
-        case 3:
+        case 104:
             swapPlayer(pc, -1, 0);
             break;
-        case 4:
+        case 108:
             swapPlayer(pc, 1, 0);
             break;
-        case 5:
+        case 98:
             swapPlayer(pc, -1, 1);
             break;
-        case 6:
+        case 106:
             swapPlayer(pc, 0, 1);
             break;
-        case 7:
+        case 110:
             swapPlayer(pc, 1, 1);
             break;
+				defualt:
+						printw("%d", direction);
+						break;
     }
 }
 

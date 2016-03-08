@@ -9,6 +9,9 @@
 #ifndef utils_h
 #define utils_h
 
+#include <ncurses.h>
+#include <curses.h>
+
 #include "binheap.h"
 
 #define TRUE 1

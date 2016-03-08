@@ -10,7 +10,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
-#include <ncurses.h>
 #include <unistd.h>
 #include <limits.h>
 
@@ -30,12 +29,13 @@ void freeCharacter(void* key);
 #pragma mark - Main
 
 int main(int argc, char* argv[]) {
+		initscr();
+		noecho();
+		curs_set(0);
+
     int numRooms, numMonsters;
-    
-    srand(1456299808);
-    //int t;
-    //srand(t = time(NULL));
-    //printf("%d", t);
+    srand(time(NULL));
+
     room_t* rooms = setUp(argc, argv, &numRooms, &numMonsters);
     pc_t* pc = createPlayerCharacter(rooms);
     character_t* players = setUpPlayers(numMonsters, pc, numRooms, rooms);
@@ -48,7 +48,8 @@ int main(int argc, char* argv[]) {
         character_t* character = (character_t*)binheap_remove_min(&pqueue);
         if (character->charID.player->dead == 0 || character->charID.monster->dead == 0) {
             if(character->type == player) {
-                movePlayer(character->charID.player);
+								int ch = getch();
+                movePlayer(character->charID.player, ch);
                 findLineOfSightMultiple(players, numMonsters + 1, pc, rooms, numRooms);
             } else if (character->type == mon) {
                 moveMonster(character->charID.monster, pc);
@@ -74,7 +75,8 @@ int main(int argc, char* argv[]) {
     binheap_delete(&pqueue);
     free(players);
     free(rooms);
-    
+   
+		endwin(); 
     return 0;
 }
 

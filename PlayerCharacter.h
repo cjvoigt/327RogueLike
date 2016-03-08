@@ -21,6 +21,6 @@ pc_t* createPlayerCharacter(room_t* rooms);
 character_t  playerAsCharacter(pc_t* pc);
 
 /* Player Movement */
-void movePlayer(pc_t* pc);
+void movePlayer(pc_t* pc, int direction);
 
 #endif /* PlayerCharcter_h */
