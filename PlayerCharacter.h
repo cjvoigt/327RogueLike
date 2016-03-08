@@ -22,5 +22,6 @@ character_t  playerAsCharacter(pc_t* pc);
 
 /* Player Movement */
 void movePlayer(pc_t* pc, int direction);
+void swapPlayer(pc_t* pc, int newX, int newY); 
 
 #endif /* PlayerCharcter_h */

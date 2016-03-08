@@ -46,26 +46,50 @@ character_t playerAsCharacter(pc_t* pc) {
 
 void movePlayer(pc_t* pc, int direction) {
     switch (direction) {
+				 case 55:
+            swapPlayer(pc, -1, -1);
+            break;
         case 121:
             swapPlayer(pc, -1, -1);
+            break;
+				 case 56:
+            swapPlayer(pc, 0, -1);
             break;
         case 107:
             swapPlayer(pc, 0, -1);
             break;
+				 case 57:
+            swapPlayer(pc, 1, -1);
+            break;
         case 117:
             swapPlayer(pc, 1, -1);
+            break;
+				 case 52:
+            swapPlayer(pc, -1, 0);
             break;
         case 104:
             swapPlayer(pc, -1, 0);
             break;
+				 case 54:
+            swapPlayer(pc, 1, 0);
+            break;
         case 108:
             swapPlayer(pc, 1, 0);
+            break;
+				 case 49:
+            swapPlayer(pc, -1, 1);
             break;
         case 98:
             swapPlayer(pc, -1, 1);
             break;
+				 case 50:
+            swapPlayer(pc, 0, 1);
+            break;
         case 106:
             swapPlayer(pc, 0, 1);
+            break;
+				 case 51:
+            swapPlayer(pc, 1, 1);
             break;
         case 110:
             swapPlayer(pc, 1, 1);
