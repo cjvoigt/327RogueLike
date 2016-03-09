@@ -42,15 +42,15 @@ void drawMonsterList(character_t* characters, int numMonsters) {
     for(i = 1; i <= numMonsters; i++) {
         printw( "%d, ",  characters[i].charID.monster->behavior);
         if(pc->y - characters[i].charID.monster->y > 0) {
-            printw("%d North and ", pc->y - characters[i].charID.monster->y);
+            printw("%d North and ", getMonsterChar(pc->y - characters[i].charID.monster->y));
         } else {
-             printw( "%d South and ", (pc->y - characters[i].charID.monster->y) * -1);
+             printw( "%d South and ", getMonsterChar((pc->y - characters[i].charID.monster->y) * -1));
         }
 
         if(pc->x - characters[i].charID.monster->x > 0) {
-             printw( "%d West.", pc->x - characters[i].charID.monster->x);
+             printw( "%d West.", getMonsterChar(pc->x - characters[i].charID.monster->x));
         } else {
-            printw("%d East.", (pc->x - characters[i].charID.monster->x) * -1);
+            printw("%d East.", getMonsterChar((pc->x - characters[i].charID.monster->x) * -1));
         }
         printw("\n");
     }

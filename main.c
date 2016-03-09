@@ -86,15 +86,20 @@ int main(int argc, char* argv[]) {
         }
     }
 
-    if(pc->dead == 1) {
-        drawDungeon("You Died!");
+    if(pc->dead == 1) { 
+        drawDungeon("You Died! Press e to exit");
     } else {
-        drawDungeon("You Won!");
+        drawDungeon("You Won! Press e to exit");
     }
 
     binheap_delete(&pqueue);
     free(players);
     free(rooms);
+
+    int end;
+    while (end != 'e') {
+        end = getch();
+    }
 
     endwin();
     return 0;
@@ -246,9 +251,9 @@ void takeAction(int direction, pc_t* pc, character_t* monsters, int numMonsters)
             break;
         case 109:
             drawMonsterList(monsters, numMonsters);
-            int button = getch();
+            int button;
             while(button != 27) {
-                continue;
+                button = getch();
             }
             break; 
         case 32:

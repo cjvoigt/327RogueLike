@@ -12,7 +12,6 @@ cell_t dungeon[80][21];
 
 #pragma mark - Prototypes
 
-char getMonsterChar(int monsterID);
 void getPoint(room_t *startRoom, room_t *nextRoom, int *x, int *y);
 int findCenter(int num);
 int goHorizontal(int startX, int endX, int *y);

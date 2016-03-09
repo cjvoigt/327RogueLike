@@ -27,7 +27,8 @@ typedef struct cell {
 extern cell_t dungeon[80][21];
 
 /* Full Dungeon */
-void drawDungeon(const char* topMessage); 
+void drawDungeon(const char* topMessage);
+ char getMonsterChar(int monsterID);
 void fillDungeon();
 void createDungeon(int numRooms, room_t* rooms);
 
