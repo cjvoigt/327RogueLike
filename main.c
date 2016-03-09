@@ -25,7 +25,7 @@ room_t* handleArgs(int* array, int* numRooms, int* numMonsters);
 character_t* setUpPlayers(int numMonsters, pc_t* pc, int numRooms, room_t* rooms);
 int32_t compareCharacters(const void *key, const void *with);
 void freeCharacter(void* key);
-void takeAction(int direction, pc_t* pc, character_t* monsters, int numMonsters);
+void takeAction(int direction, pc_t* pc, int* turn);
 
 #pragma mark - Main
 
@@ -76,8 +76,7 @@ int main(int argc, char* argv[]) {
                         saveDungeon(numRooms, rooms);
                         break; 
                     } else {
-                        takeAction(ch, pc, players, numMonsters);
-                        turn = 1;
+                        takeAction(ch, pc, &turn);
                     }
                 }
                 if(ch == '<' || ch == '>') {
@@ -112,7 +111,7 @@ int main(int argc, char* argv[]) {
     free(players);
     free(rooms);
 
-    int end;
+    int end = 0;
     while (end != 'e') {
         end = getch();
     }
@@ -168,7 +167,10 @@ room_t* handleArgs(int* array, int* numRooms, int* numMonsters) {
     } else {
         //no load or save
         *numRooms = rand() % 5 + 6;
-        rooms = malloc(*numRooms * sizeof(room_t));
+        room_t* temp = malloc(*numRooms * sizeof(room_t));
+        if(temp != NULL) {
+            rooms = temp;
+        }
         createDungeon(*numRooms, rooms);
     }
 
@@ -215,7 +217,8 @@ void freeCharacter(void* key) {
     }
 }
 
-void takeAction(int direction, pc_t* pc, character_t* monsters, int numMonsters) {
+void takeAction(int direction, pc_t* pc, int* turn) {
+    *turn = 1;
     switch (direction) {
          case 55:
             swapPlayer(pc, -1, -1);
@@ -267,8 +270,8 @@ void takeAction(int direction, pc_t* pc, character_t* monsters, int numMonsters)
             break;
         case 32:
             break;
-         defualt:
-            drawDungeon("Can't Press this");
+         default:
+            *turn = 0;
             break;
     }
 }

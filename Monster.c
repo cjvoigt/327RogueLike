@@ -40,7 +40,7 @@ void drawMonsterList(character_t* characters, int numMonsters) {
     do {
         clear();
         printw( "Monster List\n");
-        for(i = start; i <= numMonsters && i < start + 21; i++) {
+        for(i = start; i <= numMonsters && i <= start + 21; i++) {
             printw( "%d. %c, ",i, getMonsterChar( characters[i].charID.monster->behavior));
             if(pc->y - characters[i].charID.monster->y > 0) {
                 printw("%d North and ", pc->y - characters[i].charID.monster->y);
@@ -63,6 +63,7 @@ void drawMonsterList(character_t* characters, int numMonsters) {
             start++;
         }
     } while(button != 27);
+    drawDungeon("");
 }
 
 #pragma mark - Monster Creation:
