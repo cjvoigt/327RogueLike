@@ -35,26 +35,34 @@ int adjustHardness(int current);
 #pragma mark - Monster Printing
 
 void drawMonsterList(character_t* characters, int numMonsters) {
-    int i;
+    int i,  button, start = 1; 
     pc_t* pc = characters[0].charID.player;
-    clear();
-    mvprintw(0,0, "Monster List\n");
-    for(i = 1; i <= numMonsters; i++) {
-        printw( "%d, ",  characters[i].charID.monster->behavior);
-        if(pc->y - characters[i].charID.monster->y > 0) {
-            printw("%d North and ", getMonsterChar(pc->y - characters[i].charID.monster->y));
-        } else {
-             printw( "%d South and ", getMonsterChar((pc->y - characters[i].charID.monster->y) * -1));
-        }
+    do {
+        clear();
+        printw( "Monster List\n");
+        for(i = start; i <= numMonsters && i < start + 21; i++) {
+            printw( "%d. %c, ",i, getMonsterChar( characters[i].charID.monster->behavior));
+            if(pc->y - characters[i].charID.monster->y > 0) {
+                printw("%d North and ", pc->y - characters[i].charID.monster->y);
+            } else {
+                printw( "%d South and ", (pc->y - characters[i].charID.monster->y) * -1);
+            }
 
-        if(pc->x - characters[i].charID.monster->x > 0) {
-             printw( "%d West.", getMonsterChar(pc->x - characters[i].charID.monster->x));
-        } else {
-            printw("%d East.", getMonsterChar((pc->x - characters[i].charID.monster->x) * -1));
+            if(pc->x - characters[i].charID.monster->x > 0) {
+                printw( "%d West.", pc->x - characters[i].charID.monster->x);
+            } else {
+                printw("%d East.", (pc->x - characters[i].charID.monster->x) * -1);
+            }
+            printw("\n");
         }
-        printw("\n");
-    }
-    refresh();
+        refresh();
+        button = getch();
+        if(button == KEY_UP && start > 1) {
+            start--;
+        } else if(button == KEY_DOWN && (numMonsters - start) > 21) {
+            start++;
+        }
+    } while(button != 27);
 }
 
 #pragma mark - Monster Creation:

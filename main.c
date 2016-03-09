@@ -27,12 +27,12 @@ int32_t compareCharacters(const void *key, const void *with);
 void freeCharacter(void* key);
 void takeAction(int direction, pc_t* pc, character_t* monsters, int numMonsters);
 
-
 #pragma mark - Main
 
 int main(int argc, char* argv[]) {
     initscr();
     noecho();
+    keypad(stdscr, TRUE);
     curs_set(0);
 
     int numRooms, numMonsters;
@@ -50,26 +50,40 @@ int main(int argc, char* argv[]) {
         character_t* character = (character_t*)binheap_remove_min(&pqueue);
         if (character->charID.player->dead == 0 || character->charID.monster->dead == 0) {
             if(character->type == player) {
-                int ch = getch();
-                char curChar = dungeon[character->charID.player->x][character->charID.player->y].type;
-                if((ch == 60 && curChar == '<') ||(ch == 62 && curChar == '>')) {
-                    fillDungeon();
-                    int temp[4] = {0, 0, 0, 0};
-                    binheap_delete(&pqueue);
-                    free(pc);
-                    free(players);
-                    free(rooms);
-                    rooms = handleArgs(temp, &numRooms, &numMonsters);
-                    pc = malloc(sizeof(pc_t));
-                    pc = createPlayerCharacter(rooms);
-                    players = setUpPlayers(numMonsters, pc, numRooms, rooms);
-                    binheap_init_from_array(&pqueue, players, sizeof(character_t), numMonsters + 1, compareCharacters, freeCharacter);
-                    drawDungeon("");
+                int turn = 0, ch;
+                while(turn == 0) {
+                    ch = getch();
+                    char curChar = dungeon[character->charID.player->x][character->charID.player->y].type;
+                    if((ch == 60 && curChar == '<') ||(ch == 62 && curChar == '>')) {
+                        fillDungeon();
+                        int temp[4] = {0, 0, 0, 0};
+                        binheap_delete(&pqueue);
+                        free(pc);
+                        free(players);
+                        free(rooms);
+                        rooms = handleArgs(temp, &numRooms, &numMonsters);
+                        pc = malloc(sizeof(pc_t));
+                        pc = createPlayerCharacter(rooms);
+                        players = setUpPlayers(numMonsters, pc, numRooms, rooms);
+                        binheap_init_from_array(&pqueue, players, sizeof(character_t), numMonsters + 1, compareCharacters, freeCharacter);
+                        drawDungeon("");
+                        break;
+                    } else if (ch == '<' || ch == '>') {
+                        continue;
+                    } else if (ch == 'm') {
+                         drawMonsterList(players, numMonsters);
+                    } else if (ch == 'S') {
+                        saveDungeon(numRooms, rooms);
+                        break; 
+                    } else {
+                        takeAction(ch, pc, players, numMonsters);
+                        turn = 1;
+                    }
+                }
+                if(ch == '<' || ch == '>') {
                     continue;
                 } else if (ch == 'S') {
                     break;
-                } else {
-                    takeAction(ch, pc, players, numMonsters);
                 }
                 findLineOfSightMultiple(players, numMonsters + 1, pc, rooms, numRooms);
             } else if (character->type == mon) {
@@ -88,8 +102,10 @@ int main(int argc, char* argv[]) {
 
     if(pc->dead == 1) { 
         drawDungeon("You Died! Press e to exit");
-    } else {
+    } else if(numMonsters == 0) {
         drawDungeon("You Won! Press e to exit");
+    } else {
+        drawDungeon("Press e to exit");
     }
 
     binheap_delete(&pqueue);
@@ -249,13 +265,6 @@ void takeAction(int direction, pc_t* pc, character_t* monsters, int numMonsters)
         case 110:
             swapPlayer(pc, 1, 1);
             break;
-        case 109:
-            drawMonsterList(monsters, numMonsters);
-            int button;
-            while(button != 27) {
-                button = getch();
-            }
-            break; 
         case 32:
             break;
          defualt:
