@@ -66,6 +66,8 @@ int main(int argc, char* argv[]) {
                     binheap_init_from_array(&pqueue, players, sizeof(character_t), numMonsters + 1, compareCharacters, freeCharacter);
                     drawDungeon("");
                     continue;
+                } else if (ch == 'S') {
+                    break;
                 } else {
                     takeAction(ch, pc, players, numMonsters);
                 }
