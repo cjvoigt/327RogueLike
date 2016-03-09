@@ -23,7 +23,6 @@
 room_t* setUp(int argc, char * argv[], int* numRooms, int*numMonsters);
 room_t* handleArgs(int* array, int* numRooms, int* numMonsters);
 character_t* setUpPlayers(int numMonsters, pc_t* pc, int numRooms, room_t* rooms);
-void setUpNewDungeon(int* numRooms, room_t* rooms, int* numMonsters, character_t* players, pc_t* pc, binheap_t* pqueue);
 int32_t compareCharacters(const void *key, const void *with);
 void freeCharacter(void* key);
 void takeAction(int direction, pc_t* pc, character_t* monsters, int numMonsters);
@@ -52,7 +51,8 @@ int main(int argc, char* argv[]) {
         if (character->charID.player->dead == 0 || character->charID.monster->dead == 0) {
             if(character->type == player) {
                 int ch = getch();
-                if(ch == 60 || ch == 62) {
+                char curChar = dungeon[character->charID.player->x][character->charID.player->y].type;
+                if((ch == 60 && curChar == '<') ||(ch == 62 && curChar == '>')) {
                     fillDungeon();
                     int temp[4] = {0, 0, 0, 0};
                     binheap_delete(&pqueue);
@@ -170,21 +170,6 @@ character_t* setUpPlayers(int numMonsters, pc_t* pc, int numRooms, room_t* rooms
     return players;
 }
 
-void setUpNewDungeon(int* numRooms, room_t* rooms, int* numMonsters, character_t* players, pc_t* pc, binheap_t* pqueue) {
-    fillDungeon();
-    int temp[4] = {0, 0, 0, 0};
-    binheap_delete(pqueue);
-    free(pc);
-    free(players);
-    free(rooms);
-    rooms = handleArgs(temp, numRooms, numMonsters);
-    pc = malloc(sizeof(pc_t));
-    pc = createPlayerCharacter(rooms);
-    players = setUpPlayers(*numMonsters, pc, *numRooms, rooms);
-    binheap_init_from_array(pqueue, players, sizeof(character_t), *numMonsters + 1, compareCharacters, freeCharacter);
-    drawDungeon("");
-}
-
 #pragma mark - Priority Queue
 
 int32_t compareCharacters(const void *key, const void *with) {
@@ -264,6 +249,8 @@ void takeAction(int direction, pc_t* pc, character_t* monsters, int numMonsters)
                 continue;
             }
             break; 
+        case 32:
+            break;
          defualt:
             drawDungeon("Can't Press this");
             break;

@@ -90,7 +90,20 @@ void createDungeon(int numRooms, room_t* rooms) {
         }
         addRoom(rooms[i]);
     }
-    
+
+    int r = (rand() % numRooms) + 1;
+    room_t room = rooms[r];
+
+    int adjustment = 1;
+    if(room.height > 2) {
+        adjustment = 2;
+    }
+
+    int x = room.x + (rand() % (room.width - 2)) + 1;
+    int y = room.y + (rand() % (room.height - adjustment)) + 1;
+    dungeon[x][y].type = '>';
+
+
     for(j = 0; j < numRooms-1; j++){
         addCorridor(&rooms[j], &rooms[j+1]);
     }

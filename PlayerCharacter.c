@@ -28,6 +28,7 @@ pc_t* createPlayerCharacter(room_t* rooms) {
     pc->y = room.y + (rand() % (room.height - adjustment)) + 1;
     pc->dead = 0;
     dungeon[pc->x][pc->y].character = playerAsCharacter(pc);
+    dungeon[pc->x][pc->y].type = '<';
     
     return pc;
 }
