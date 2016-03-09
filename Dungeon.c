@@ -23,9 +23,10 @@ void redrawDungeon();
 
 #pragma mark - Full Dungeon
 
-void drawDungeon() {
+void drawDungeon(const char* topMessage) {
     int i, j;
     clear(); 
+    mvprintw(0,0, "%s", topMessage);
     for(i = 0;i<21; i++) {
         for(j = 0;j<80; j++) {
             if(dungeon[j][i].character.type == player) {

@@ -22,6 +22,8 @@ typedef struct position {
     binheap_node_t* heapNode;
 } position_t;
 
+void drawMonsterList(character_t* characters, int numMonsters); 
+
 /* Monster Creation */
 monster_t* createMonster(room_t* rooms, int numRooms);
 character_t monsterAsCharacter(monster_t* monster, int num);

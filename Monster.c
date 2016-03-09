@@ -32,12 +32,24 @@ void printDistance(position_t* array[][21]);
 void deleteDistanceDungeon(position_t* positions[][21]);
 int adjustHardness(int current);
 
-#pragma mark - Monster Creation
+#pragma mark - Monster Printing
+
+void drawMonsterList(character_t* characters, int numMonsters) {
+    int i;
+    clear();
+    mvprintw(0,0, "Monster List");
+    for(i = 1; i <= numMonsters; i++) {
+        mvprintw(i,0, "%d",  characters[i].charID.monster->behavior);
+    }
+    refresh();
+}
+
+#pragma mark - Monster Creation:
 
 monster_t* createMonster(room_t* rooms, int numRooms) {
     int randRoomNumber = (rand() % (numRooms - 1)) + 1;
     room_t room = rooms[randRoomNumber];
-    
+
     monster_t* monster = malloc(sizeof(monster_t));
     monster->x = room.x + rand() % room.width;
     monster->y = room.y + rand() % room.height;
@@ -72,22 +84,22 @@ void moveMonster(monster_t* monster, pc_t* pc) {
     int m2 = 0x3;
     int m3 = 0x7;
     int m4 = 0xF;
-    
+
     int intelligent = monster->behavior & m1;
     int telepathy = (monster->behavior & m2) - intelligent;
     int tunneling = (monster->behavior & m3) - telepathy - intelligent;
     int erratic = (monster->behavior & m4) - tunneling - telepathy - intelligent;
-    
+
     telepathy /= 2;
     tunneling /= 4;
     erratic /= 8;
-    
+
     if(telepathy == 1) {
         monster->lastX = pc->x;
         monster->lastY = pc->y;
         monster->visible = 1;
     }
-    
+
     if (erratic == 1 && (rand() % 2) == 1) {
         randomMove(monster, tunneling);
     } else if (intelligent == 0) {
@@ -177,20 +189,20 @@ void straightMove(monster_t* monster, int tunneling) {
 
 void shortestMove(monster_t* monster, int tunneling) {
     if(monster->lastX != INFINITY && (monster->lastX != monster->x || monster->lastY != monster->y)) {
-        
+
         pc_t* tempPC = malloc(sizeof(pc_t));
         int distanceDungeon[80][21];
-        
+
         tempPC->x = monster->lastX;
         tempPC->y = monster->lastY;
         tempPC->dead = 0;
-        
+
         if (tunneling == 0) {
             distanceToPlayerNoTunneling(tempPC, distanceDungeon);
         } else {
             distanceToPlayerTunneling(tempPC, distanceDungeon);
         }
-        
+
         int least = INFINITY;
         int x = monster->x, y = monster->y;
         for(int i = monster->y - 1; i <= monster->y + 1; i++) {
@@ -202,7 +214,7 @@ void shortestMove(monster_t* monster, int tunneling) {
                 }
             }
         }
-        
+
         swapMonster(monster, x, y, tunneling);
         free(tempPC);
     }

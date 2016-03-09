@@ -26,7 +26,8 @@ character_t* setUpPlayers(int numMonsters, pc_t* pc, int numRooms, room_t* rooms
 void setUpNewDungeon(int* numRooms, room_t* rooms, int* numMonsters, character_t* players, pc_t* pc, binheap_t* pqueue);
 int32_t compareCharacters(const void *key, const void *with);
 void freeCharacter(void* key);
-void takeAction(int direction, pc_t* pc); 
+void takeAction(int direction, pc_t* pc, character_t* monsters, int numMonsters);
+
 
 #pragma mark - Main
 
@@ -41,7 +42,7 @@ int main(int argc, char* argv[]) {
     room_t* rooms = setUp(argc, argv, &numRooms, &numMonsters);
     pc_t* pc = createPlayerCharacter(rooms);
     character_t* players = setUpPlayers(numMonsters, pc, numRooms, rooms);
-    drawDungeon();
+    drawDungeon("Welcome to the Game");
 
     binheap_t pqueue;
     binheap_init_from_array(&pqueue, players, sizeof(character_t), numMonsters + 1, compareCharacters, freeCharacter);
@@ -63,10 +64,10 @@ int main(int argc, char* argv[]) {
                     pc = createPlayerCharacter(rooms);
                     players = setUpPlayers(numMonsters, pc, numRooms, rooms);
                     binheap_init_from_array(&pqueue, players, sizeof(character_t), numMonsters + 1, compareCharacters, freeCharacter);
-                    drawDungeon();
+                    drawDungeon("");
                     continue;
                 } else {
-                    takeAction(ch, pc);
+                    takeAction(ch, pc, players, numMonsters);
                 }
                 findLineOfSightMultiple(players, numMonsters + 1, pc, rooms, numRooms);
             } else if (character->type == mon) {
@@ -75,7 +76,7 @@ int main(int argc, char* argv[]) {
            }
             character->turn += (100/character->speed);
             binheap_insert(&pqueue, character);
-            drawDungeon();
+            drawDungeon("");
         } else if (character->charID.monster->dead == 1) {
             numMonsters--;
             character->turn = INT_MAX;
@@ -84,9 +85,9 @@ int main(int argc, char* argv[]) {
     }
 
     if(pc->dead == 1) {
-        printf("You Died!\n");
+        drawDungeon("You Died!");
     } else {
-        printf("You Won!");
+        drawDungeon("You Won!");
     }
 
     binheap_delete(&pqueue);
@@ -181,7 +182,7 @@ void setUpNewDungeon(int* numRooms, room_t* rooms, int* numMonsters, character_t
     pc = createPlayerCharacter(rooms);
     players = setUpPlayers(*numMonsters, pc, *numRooms, rooms);
     binheap_init_from_array(pqueue, players, sizeof(character_t), *numMonsters + 1, compareCharacters, freeCharacter);
-    drawDungeon();
+    drawDungeon("");
 }
 
 #pragma mark - Priority Queue
@@ -206,7 +207,7 @@ void freeCharacter(void* key) {
     }
 }
 
-void takeAction(int direction, pc_t* pc) {
+void takeAction(int direction, pc_t* pc, character_t* monsters, int numMonsters) {
     switch (direction) {
          case 55:
             swapPlayer(pc, -1, -1);
@@ -256,8 +257,15 @@ void takeAction(int direction, pc_t* pc) {
         case 110:
             swapPlayer(pc, 1, 1);
             break;
+        case 109:
+            drawMonsterList(monsters, numMonsters);
+            int button = getch();
+            while(button != 27) {
+                continue;
+            }
+            break; 
          defualt:
-            printw("%d", direction);
+            drawDungeon("Can't Press this");
             break;
     }
 }
