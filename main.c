@@ -6,14 +6,10 @@
 //  Copyright © 2016 Camden Voigt. All rights reserved.
 //
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 #include <time.h>
 #include <unistd.h>
 #include <limits.h>
 
-#include "Dungeon.h"
 #include "monster.h"
 
 #pragma mark - Prototypes
@@ -69,7 +65,8 @@ int main(int argc, char* argv[]) {
                     } else if (ch == '<' || ch == '>') {
                         continue;
                     } else if (ch == 'm') {
-                         drawMonsterList(characters, numMonsters);
+                        drawMonsterList(characters, numMonsters);
+                        drawDungeon("");
                     } else if (ch == 'S') {
                         saveDungeon(numRooms, rooms);
                         break; 

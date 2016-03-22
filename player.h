@@ -9,10 +9,8 @@
 #ifndef player_h
 #define player_h
 
-#include <stdio.h>
 #include <stdint.h>
 
-#include "binheap.h"
 #include "character.h"
 #include "Dungeon.h"
 
@@ -29,7 +27,7 @@ void changePos(player_t* player, room_t* rooms);
 
 /* Player Movement */
 void movePlayer(player_t* player, int direction);
-void swapPlayer(player_t* player, int newX, int newY);
+void swapPlayer(player_t* p, int newX, int newY);
 
 # ifdef __cplusplus
 }

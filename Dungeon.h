@@ -9,13 +9,11 @@
 #ifndef Dungeon_h
 #define Dungeon_h
 
-#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdint.h>
-#include <endian.h>
+//#include <endian.h>
 
-#include "utils.h"
 #include "character.h"
 
 typedef struct cell {
@@ -29,7 +27,6 @@ extern cell_t dungeon[80][21];
 
 /* Full Dungeon */
 void drawDungeon(const char* topMessage);
-char getMonsterChar(int monsterID);
 void fillDungeon();
 void createDungeon(int numRooms, room_t* rooms);
 

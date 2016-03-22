@@ -104,7 +104,8 @@ void movePlayer(player_t* player, int direction) {
     }
 }
 
-void swapPlayer(Player* player, int newX, int newY) {
+void swapPlayer(player_t* p, int newX, int newY) {
+    Player* player = (Player*)p;
     if(dungeon[player->x + newX][player->y + newY].hardness != INFINITY) {
         checkMonsterDeath(player->x + newX, player->y + newY);
         if (dungeon[player->x + newX][player->y + newY].type == ' ') {

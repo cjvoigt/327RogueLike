@@ -36,6 +36,25 @@ int adjustHardness(int current);
 
 #pragma mark - Monster Printing
 
+char getMonsterChar(int monsterID) {
+    switch (monsterID) {
+        case MONSTERA:
+            return 'A';
+        case MONSTERB:
+            return 'B';
+        case MONSTERC:
+            return 'C';
+        case MONSTERD:
+            return 'D';
+        case MONSTERE:
+            return 'E';
+        case MONSTERF:
+            return 'F';
+        default:
+            return monsterID + '0';
+    }
+}
+
 void drawMonsterList(character_t* characters, int numMonsters) {
     int i,  button, start = 1; 
     Player* player = (Player*)&characters[0];
@@ -66,7 +85,6 @@ void drawMonsterList(character_t* characters, int numMonsters) {
             start++;
         }
     } while(button != 27);
-    drawDungeon("");
 }
 
 #pragma mark - Monster Creation:
