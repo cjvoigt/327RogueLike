@@ -36,25 +36,6 @@ int adjustHardness(int current);
 
 #pragma mark - Monster Printing
 
-char getMonsterChar(int monsterID) {
-    switch (monsterID) {
-        case MONSTERA:
-            return 'A';
-        case MONSTERB:
-            return 'B';
-        case MONSTERC:
-            return 'C';
-        case MONSTERD:
-            return 'D';
-        case MONSTERE:
-            return 'E';
-        case MONSTERF:
-            return 'F';
-        default:
-            return monsterID + '0';
-    }
-}
-
 void drawMonsterList(character_t* characters, int numMonsters) {
     int i,  button, start = 1; 
     Player* player = (Player*)&characters[0];
@@ -97,7 +78,7 @@ monster_t* createMonster(room_t* rooms, int numRooms) {
     Monster* monster = (Monster*) malloc(sizeof(Monster));
     monster->x = room.x + rand() % room.width;
     monster->y = room.y + rand() % room.height;
-    while(((Character*)dungeon[monster->x][monster->y].character)->type == player || ((Character*)dungeon[monster->x][monster->y].character)->type == mon) {
+    while(((Character*)dungeon[monster->x][monster->y].character)->type == pc || ((Character*)dungeon[monster->x][monster->y].character)->type == mon) {
         monster->x = room.x + rand() % room.width;
         monster->y = room.y + rand() % room.height;
     }
@@ -287,7 +268,7 @@ void checkForKill(int x, int y) {
     if(currentCharacter->type == mon) {
         currentCharacter->dead = 1;
         currentCharacter->type = none;
-    } else if(currentCharacter->type == player) {
+    } else if(currentCharacter->type == pc) {
         currentCharacter->dead = 1;
         currentCharacter->type = none;
     }
@@ -392,29 +373,27 @@ int checkLine(int x, int endX, int y, int endY, int dx, int dy) {
 
 #pragma mark - Distance to Player
 
-void distanceToPlayerNoTunneling(player_t* p, int results[][21]) {
+void distanceToPlayerNoTunneling(Player* player, int results[][21]) {
     int i, j;
     position_t* distanceDungeon[80][21];
     colors_t colors[80][21];
     binheap_t heap;
     binheap_init(&heap, comparePosition, free);
-    
-    Player* player = (Player*)p;
-    
+
     for(i = 0; i < 21; i++) {
         for(j = 0; j < 80; j++) {
             if(dungeon[j][i].hardness == 0) {
                 distanceDungeon[j][i] = (position_t*)malloc(sizeof(position_t));
                 distanceDungeon[j][i]->distance = INFINITY;
-								distanceDungeon[j][i]->x = j;
-								distanceDungeon[j][i]->y = i;
+                distanceDungeon[j][i]->x = j;
+                distanceDungeon[j][i]->y = i;
                 results[j][i] = INFINITY;
                 colors[j][i] = white;
             } else {
                 distanceDungeon[j][i] = (position_t*)malloc(sizeof(position_t));
                 distanceDungeon[j][i]->distance = INFINITY;
-								distanceDungeon[j][i]->x = j;
-								distanceDungeon[j][i]->y = i;
+                distanceDungeon[j][i]->x = j;
+                distanceDungeon[j][i]->y = i;
                 results[j][i] = INFINITY;
                 colors[j][i] = black;
             }
@@ -446,13 +425,11 @@ void distanceToPlayerNoTunneling(player_t* p, int results[][21]) {
 	binheap_delete(&heap);
 }
 
-void distanceToPlayerTunneling(player_t* p, int results[][21]) {
+void distanceToPlayerTunneling(Player* player, int results[][21]) {
     int i, j;
     position_t* distanceDungeon[80][21];
     binheap_t heap;
     binheap_init(&heap, comparePosition, NULL);
-    
-    Player* player = (Player*)p;
     
     for(i = 0; i < 21; i++) {
         for(j = 0; j < 80; j++) {

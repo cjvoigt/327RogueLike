@@ -10,11 +10,7 @@
 
 #pragma mark - Prototypes
 
-<<<<<<< HEAD
-void swapPlayer(Player`* player, int newX, int newY);
-=======
 void swapPlayer(Player* player, int newX, int newY);
->>>>>>> 7e3096eb6bd3e7b4c6884af515c140effc46c5a0
 void checkMonsterDeath(int x, int y);
 
 #pragma mark - Player Creation

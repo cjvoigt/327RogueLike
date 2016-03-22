@@ -28,6 +28,8 @@ int getSpeed(const character_t* c);
 int getDead(const character_t* c);
 characterTag_t getType(const character_t* c);
 
+int getBehavior(const monster_t* monster);
+
 //Setters
 void setX(character_t* c, int x);
 void setY(character_t* c, int y);

@@ -14,9 +14,6 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-    
-typedef struct monster {
-} monster_t;
 
 typedef struct position {
     int x;
@@ -38,7 +35,6 @@ void findLineOfSightMultiple(character_t* characters, int numChars, player_t* p,
 void findLineOfSightSingle(character_t* character, int numChars, player_t* p, room_t* rooms, int numRooms);
     
 /* Getters */
-int getBehavior(const monster_t* monster);
 int getLastX(const monster_t* monster);
 int getLastY(const monster_t* monster);
 int getVisible(const monster_t* monster);

@@ -22,13 +22,32 @@ void redrawDungeon();
 
 #pragma mark - Full Dungeon
 
+char getMonsterChar(int monsterID) {
+    switch (monsterID) {
+        case MONSTERA:
+            return 'A';
+        case MONSTERB:
+            return 'B';
+        case MONSTERC:
+            return 'C';
+        case MONSTERD:
+            return 'D';
+        case MONSTERE:
+            return 'E';
+        case MONSTERF:
+            return 'F';
+        default:
+            return monsterID + '0';
+    }
+}
+
 void drawDungeon(const char* topMessage) {
     int i, j;
     clear(); 
     mvprintw(0,0, "%s", topMessage);
     for(i = 0;i<21; i++) {
         for(j = 0;j<80; j++) {
-            if(getType(dungeon[j][i].character) == player) {
+            if(getType(dungeon[j][i].character) == pc) {
                 mvprintw(i+1, j, "@");
             } else if(getType(dungeon[j][i].character) == mon) {
                 mvprintw(i+1, j, "%c", getMonsterChar(getBehavior((monster_t*)dungeon[j][i].character)));

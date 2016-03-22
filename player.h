@@ -12,7 +12,6 @@
 #include <stdio.h>
 #include <stdint.h>
 
-#include "utils.h"
 #include "binheap.h"
 #include "character.h"
 #include "Dungeon.h"
@@ -20,10 +19,10 @@
 # ifdef __cplusplus
 extern "C" {
 # endif
-    
+
 typedef struct player {
 } player_t;
-    
+
 /* Player Creation */
 player_t* createPlayer(room_t* rooms);
 void changePos(player_t* player, room_t* rooms);

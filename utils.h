@@ -50,4 +50,7 @@ typedef enum characterTag {
     mon
 } characterTag_t;
 
+typedef struct monster {
+} monster_t;
+
 #endif /* utils_h */
