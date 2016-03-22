@@ -10,7 +10,7 @@
 
 #pragma mark - Prototypes
 
-void swapPlayer(player_t* player, int newX, int newY);
+void swapPlayer(Player* player, int newX, int newY);
 void checkMonsterDeath(int x, int y);
 
 #pragma mark - Player Creation
@@ -104,25 +104,25 @@ void movePlayer(player_t* player, int direction) {
     }
 }
 
-void swapPlayer(player_t* player, int newX, int newY) {
-    if(dungeon[((Player *) player)->x + newX][((Player *) player)->y + newY].hardness != INFINITY) {
-        checkMonsterDeath(((Player *) player)->x + newX, ((Player *) player)->y + newY);
-        if (dungeon[((Player *) player)->x + newX][((Player *) player)->y + newY].type == ' ') {
-            dungeon[((Player *) player)->x + newX][((Player *) player)->y + newY].hardness = 0;
-            dungeon[((Player *) player)->x + newX][((Player *) player)->y + newY].type = '#';
+void swapPlayer(Player* player, int newX, int newY) {
+    if(dungeon[player->x + newX][player->y + newY].hardness != INFINITY) {
+        checkMonsterDeath(player->x + newX, player->y + newY);
+        if (dungeon[player->x + newX][player->y + newY].type == ' ') {
+            dungeon[player->x + newX][player->y + newY].hardness = 0;
+            dungeon[player->x + newX][player->y + newY].type = '#';
         }
-        dungeon[((Player *) player)->x + newX][((Player *) player)->y + newY].character = ((character_t* ) player);
-        dungeon[((Player *) player)->x + newX][((Player *) player)->y + newY].character.type = player;
-        dungeon[((Player *) player)->x][((Player *) player)->y].character = NULL;
-        dungeon[((Player *) player)->x][((Player *) player)->y].character.type = none;
-        ((Player *) player)->x += newX;
-        ((Player *) player)->y += newY;
+        dungeon[player->x + newX][player->y + newY].character = ((character_t* ) player);
+        ((Character*)dungeon[player->x][player->y].character)->type = pc;
+        dungeon[player->x][player->y].character = NULL;
+        ((Character*)dungeon[player->x][player->y].character)->type = none;
+        player->x += newX;
+        player->y += newY;
     }
 }
 
 void checkMonsterDeath(int x, int y) {
-    if(dungeon[x][y].character.type == mon) {
-        dungeon[x][y].character.charID.monster->dead = 1;
-        dungeon[x][y].character.type = none;
+    if(((Character*)dungeon[x][y].character)->type == mon) {
+        ((Character*)dungeon[x][y].character)->dead = 1;
+        ((Character*)dungeon[x][y].character)->type = none;
     }
 }
