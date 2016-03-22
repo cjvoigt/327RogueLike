@@ -15,7 +15,7 @@
 
 #include "utils.h"
 #include "Dungeon.h"
-#include "Monster.h"
+#include "monster.h"
 
 #pragma mark - Prototypes
 
@@ -48,7 +48,7 @@ int main(int argc, char* argv[]) {
     while(numMonsters > 0 && getDead((character_t*)player) != 1) {
         character_t* character = (character_t*)binheap_remove_min(&pqueue);
         if (getDead(character) == 0) {
-            if(getType(character) == player) {
+            if(getType(character) == pc) {
                 int turn = 0, ch = ' ';
                 while(turn == 0) {
                     ch = getch();

@@ -46,7 +46,7 @@ typedef struct room {
 
 typedef enum characterTag {
     none,
-    player,
+    pc,
     mon
 } characterTag_t;
 

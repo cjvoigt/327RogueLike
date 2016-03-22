@@ -7,7 +7,7 @@ main.o: main.c
 dungeon.o: Dungeon.c Dungeon.h
 	gcc -ggdb Dungeon.c -c
 
-character.o: character.h character.c
+character.o: character.h character.cpp
 	g++ -ggdb character.cpp -c
 
 player.o: player.h player.cpp utils.h Dungeon.h
