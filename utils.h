@@ -44,40 +44,10 @@ typedef struct room {
     int centerY;
 } room_t;
 
-typedef struct pc {
-    int x;
-    int y;
-    int dead;
-} pc_t;
-
-typedef struct monster {
-    int x;
-    int y;
-    int dead;
-    int behavior;
-    int lastX;
-    int lastY;
-    int visible;
-} monster_t;
-
 typedef enum characterTag {
     none,
     player,
     mon
 } characterTag_t;
-
-
-typedef union typeOfCharacter {
-    pc_t* player;
-    monster_t* monster;
-} typeOfCharacter_t;
-
-typedef struct character {
-    int type;
-    int speed;
-    int sequence;
-    int turn;
-    typeOfCharacter_t charID;
-} character_t;
 
 #endif /* utils_h */

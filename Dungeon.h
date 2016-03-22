@@ -16,12 +16,13 @@
 #include <endian.h>
 
 #include "utils.h"
+#include "monster.h"
 
 typedef struct cell {
     char type;
     int immutable;
     int hardness;
-    character_t character;
+    character_t* character;
 } cell_t;
 
 extern cell_t dungeon[80][21];

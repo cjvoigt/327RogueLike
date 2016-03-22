@@ -6,7 +6,7 @@
 //  Copyright © 2016 Camden Voigt. All rights reserved.
 //
 
-#include "Monster.h"
+#include "monster.h"
 
 #pragma mark - Data Structures
 
@@ -18,14 +18,16 @@ typedef enum colors{
 
 #pragma mark - Prototypes
 
-void swapMonster(monster_t* monster, int newX, int newY, int tunneling);
-void randomMove(monster_t* monster, int tunneling);
-void straightMove(monster_t* monster, int tunneling);
-void shortestMove(monster_t* monster, int tunneling);
-int sameRoom(monster_t* monster, pc_t* pc, room_t* rooms, int numRooms);
-int straightLine(monster_t* monster, pc_t* pc);
+void swapMonster(Monster* monster, int newX, int newY, int tunneling);
+void randomMove(Monster* monster, int tunneling);
+void straightMove(Monster* monster, int tunneling);
+void shortestMove(Monster* monster, int tunneling);
+int sameRoom(Monster* monster, Player* player, room_t* rooms, int numRooms);
+int straightLine(Monster* monster, Player* player);
 int checkLine(int x, int endX, int y, int endY, int dx, int dy);
 void checkForKill(int x, int y);
+void distanceToPlayerNoTunneling(Player* player, int results[][21]);
+void distanceToPlayerTunneling(Player* player, int results[][21]);
 int32_t comparePosition(const void *key, const void *with);
 int** getDistanceDungeon(position_t* distanceDungeon[][21]);
 void printDistance(position_t* array[][21]);
@@ -34,24 +36,44 @@ int adjustHardness(int current);
 
 #pragma mark - Monster Printing
 
+char getMonsterChar(int monsterID) {
+    switch (monsterID) {
+        case MONSTERA:
+            return 'A';
+        case MONSTERB:
+            return 'B';
+        case MONSTERC:
+            return 'C';
+        case MONSTERD:
+            return 'D';
+        case MONSTERE:
+            return 'E';
+        case MONSTERF:
+            return 'F';
+        default:
+            return monsterID + '0';
+    }
+}
+
 void drawMonsterList(character_t* characters, int numMonsters) {
     int i,  button, start = 1; 
-    pc_t* pc = characters[0].charID.player;
+    Player* player = (Player*)&characters[0];
     do {
         clear();
         printw( "Monster List\n");
+        Monster* currentMonster = ((Monster*)&characters[i]);
         for(i = start; i <= numMonsters && i <= start + 21; i++) {
-            printw( "%d. %c, ",i, getMonsterChar( characters[i].charID.monster->behavior));
-            if(pc->y - characters[i].charID.monster->y > 0) {
-                printw("%d North and ", pc->y - characters[i].charID.monster->y);
+            printw( "%d. %c, ",i, getMonsterChar(currentMonster->behavior));
+            if(player->y - currentMonster->behavior > 0) {
+                printw("%d North and ", player->y - currentMonster->y);
             } else {
-                printw( "%d South and ", (pc->y - characters[i].charID.monster->y) * -1);
+                printw( "%d South and ", (player->y - currentMonster->y) * -1);
             }
 
-            if(pc->x - characters[i].charID.monster->x > 0) {
-                printw( "%d West.", pc->x - characters[i].charID.monster->x);
+            if(player->x - currentMonster->x > 0) {
+                printw( "%d West.", player->x - currentMonster->x);
             } else {
-                printw("%d East.", (pc->x - characters[i].charID.monster->x) * -1);
+                printw("%d East.", (player->x - currentMonster->x) * -1);
             }
             printw("\n");
         }
@@ -72,10 +94,10 @@ monster_t* createMonster(room_t* rooms, int numRooms) {
     int randRoomNumber = (rand() % (numRooms - 1)) + 1;
     room_t room = rooms[randRoomNumber];
 
-    monster_t* monster = malloc(sizeof(monster_t));
+    Monster* monster = (Monster*) malloc(sizeof(Monster));
     monster->x = room.x + rand() % room.width;
     monster->y = room.y + rand() % room.height;
-    while(dungeon[monster->x][monster->y].character.type == player || dungeon[monster->x][monster->y].character.type == mon) {
+    while(((Character*)dungeon[monster->x][monster->y].character)->type == player || ((Character*)dungeon[monster->x][monster->y].character)->type == mon) {
         monster->x = room.x + rand() % room.width;
         monster->y = room.y + rand() % room.height;
     }
@@ -84,29 +106,22 @@ monster_t* createMonster(room_t* rooms, int numRooms) {
     monster->lastY = INFINITY;
     monster->dead = 0;
     monster->visible = 0;
-    dungeon[monster->x][monster->y].character.charID.monster = monster;
-    dungeon[monster->x][monster->y].character.type = mon;
-    return monster;
-}
-
-character_t monsterAsCharacter(monster_t* monster, int num) {
-    character_t character;
-    character.type = mon;
-    character.sequence = num;
-    character.speed = (rand() % 16) + 5;
-    character.turn = 0;
-    character.charID.monster = monster;
-    return  character;
+    dungeon[monster->x][monster->y].character = ((character_t*) monster);
+    ((Character*)dungeon[monster->x][monster->y].character)->type = mon;
+    return (monster_t*)monster;
 }
 
 #pragma mark - Monster Movement
 
-void moveMonster(monster_t* monster, pc_t* pc) {
+void moveMonster(monster_t* m, player_t* p) {
     int m1 = 0x1;
     int m2 = 0x3;
     int m3 = 0x7;
     int m4 = 0xF;
 
+    Player* player = (Player*)p;
+    Monster* monster = (Monster*)m;
+    
     int intelligent = monster->behavior & m1;
     int telepathy = (monster->behavior & m2) - intelligent;
     int tunneling = (monster->behavior & m3) - telepathy - intelligent;
@@ -117,8 +132,8 @@ void moveMonster(monster_t* monster, pc_t* pc) {
     erratic /= 8;
 
     if(telepathy == 1) {
-        monster->lastX = pc->x;
-        monster->lastY = pc->y;
+        monster->lastX = player->x;
+        monster->lastY = player->y;
         monster->visible = 1;
     }
 
@@ -131,7 +146,7 @@ void moveMonster(monster_t* monster, pc_t* pc) {
     }
 }
 
-void randomMove(monster_t* monster, int tunneling) {
+void randomMove(Monster* monster, int tunneling) {
     int direction = rand() % 8;
     switch (direction) {
         case 0:
@@ -193,7 +208,7 @@ void randomMove(monster_t* monster, int tunneling) {
     }
 }
 
-void straightMove(monster_t* monster, int tunneling) {
+void straightMove(Monster* monster, int tunneling) {
     if(monster->visible != 1) {
         return;
     }
@@ -209,20 +224,20 @@ void straightMove(monster_t* monster, int tunneling) {
     }
 }
 
-void shortestMove(monster_t* monster, int tunneling) {
+void shortestMove(Monster* monster, int tunneling) {
     if(monster->lastX != INFINITY && (monster->lastX != monster->x || monster->lastY != monster->y)) {
 
-        pc_t* tempPC = malloc(sizeof(pc_t));
+        Player* tempplayer = (Player*)malloc(sizeof(Player));
         int distanceDungeon[80][21];
 
-        tempPC->x = monster->lastX;
-        tempPC->y = monster->lastY;
-        tempPC->dead = 0;
+        tempplayer->x = monster->lastX;
+        tempplayer->y = monster->lastY;
+        tempplayer->dead = 0;
 
         if (tunneling == 0) {
-            distanceToPlayerNoTunneling(tempPC, distanceDungeon);
+            distanceToPlayerNoTunneling(tempplayer, distanceDungeon);
         } else {
-            distanceToPlayerTunneling(tempPC, distanceDungeon);
+            distanceToPlayerTunneling(tempplayer, distanceDungeon);
         }
 
         int least = INFINITY;
@@ -238,29 +253,29 @@ void shortestMove(monster_t* monster, int tunneling) {
         }
 
         swapMonster(monster, x, y, tunneling);
-        free(tempPC);
+        free(tempplayer);
     }
 }
 
-void swapMonster(monster_t* monster, int newX, int newY, int tunneling) {
+void swapMonster(Monster* monster, int newX, int newY, int tunneling) {
     checkForKill(newX, newY);
     if(tunneling == 1) {
         if (dungeon[newX][newY].type == ' ') {
             dungeon[newX][newY].hardness = 0;
             dungeon[newX][newY].type = '#';
         }
-        dungeon[newX][newY].character.charID.monster = monster;
-        dungeon[newX][newY].character.type = mon;
-        dungeon[monster->x][monster->y].character.charID.monster = NULL;
-        dungeon[monster->x][monster->y].character.type = none;
+        dungeon[newX][newY].character = (character_t*)monster;
+        ((Character*)dungeon[newX][newY].character)->type = mon;
+        dungeon[monster->x][monster->y].character = NULL;
+        ((Character*)dungeon[monster->x][monster->y].character)->type = none;
         monster->x = newX;
         monster->y = newY;
     } else {
         if(dungeon[newX][newY].type != ' ') {
-            dungeon[newX][newY].character.charID.monster = monster;
-            dungeon[newX][newY].character.type = mon;
-            dungeon[monster->x][monster->y].character.charID.monster = NULL;
-            dungeon[monster->x][monster->y].character.type = none;
+            dungeon[newX][newY].character = (character_t*)monster;
+            ((Character*)dungeon[newX][newY].character)->type = mon;
+            dungeon[monster->x][monster->y].character = NULL;
+            ((Character*)dungeon[monster->x][monster->y].character)->type = none;
             monster->x = newX;
             monster->y = newY;
         }
@@ -268,56 +283,59 @@ void swapMonster(monster_t* monster, int newX, int newY, int tunneling) {
 }
 
 void checkForKill(int x, int y) {
-    if(dungeon[x][y].character.type == mon) {
-        dungeon[x][y].character.charID.monster->dead = 1;
-        dungeon[x][y].character.type = none;
-    } else if(dungeon[x][y].character.type == player) {
-        dungeon[x][y].character.charID.player->dead = 1;
-        dungeon[x][y].character.type = none;
+    Character* currentCharacter = (Character*)dungeon[x][y].character;
+    if(currentCharacter->type == mon) {
+        currentCharacter->dead = 1;
+        currentCharacter->type = none;
+    } else if(currentCharacter->type == player) {
+        currentCharacter->dead = 1;
+        currentCharacter->type = none;
     }
 }
 
 #pragma mark - Line of Sight
 
-void findLineOfSightMultiple(character_t* characters, int numChars, pc_t* pc, room_t* rooms, int numRooms) {
+void findLineOfSightMultiple(character_t* characters, int numChars, player_t* p, room_t* rooms, int numRooms) {
+    Player* player = (Player*)p;
     for(int i = 1; i < numChars; i++) {
-        monster_t* monst = characters[i].charID.monster;
-        if(sameRoom(monst, pc, rooms, numRooms) == TRUE) {
+        Monster* monst = (Monster*)&characters[i];
+        if(sameRoom(monst, player, rooms, numRooms) == TRUE) {
             monst->visible = 1;
-            monst->lastX = pc->x;
-            monst->lastY = pc->y;
-        } else if(straightLine(monst, pc) == TRUE) {
+            monst->lastX = player->x;
+            monst->lastY = player->y;
+        } else if(straightLine(monst, player) == TRUE) {
             monst->visible = 1;
-            monst->lastX = pc->x;
-            monst->lastY = pc->y;
+            monst->lastX = player->x;
+            monst->lastY = player->y;
         } else {
             monst->visible = 0;
         }
     }
 }
 
-void findLineOfSightSingle(character_t* character, int numChars, pc_t* pc, room_t* rooms, int numRooms) {
-    monster_t* monst = character->charID.monster;
-    if(sameRoom(monst, pc, rooms, numRooms) == TRUE) {
+void findLineOfSightSingle(character_t* character, int numChars, player_t* p, room_t* rooms, int numRooms) {
+    Player* player = (Player*)p;
+    Monster* monst = (Monster*)character;
+    if(sameRoom(monst, player, rooms, numRooms) == TRUE) {
         monst->visible = 1;
-        monst->lastX = pc->x;
-        monst->lastY = pc->y;
-    } else if(straightLine(monst, pc) == TRUE) {
+        monst->lastX = player->x;
+        monst->lastY = player->y;
+    } else if(straightLine(monst, player) == TRUE) {
         monst->visible = 1;
-        monst->lastX = pc->x;
-        monst->lastY = pc->y;
+        monst->lastX = player->x;
+        monst->lastY = player->y;
     } else {
         monst->visible = 0;
     }
 }
 
-int sameRoom(monster_t* monster, pc_t* pc, room_t* rooms, int numRooms) {
+int sameRoom(Monster* monster, Player* player, room_t* rooms, int numRooms) {
     int i;
     
-    //Finds which room the pc is in
+    //Finds which room the player is in
     for(i = 0; i < numRooms; i++) {
-        if(pc->x >= rooms[i].x && pc->x <= (rooms[i].x + rooms[i].width)) {
-            if(pc->y >= rooms[i].y && pc->y <= (rooms[i].y + rooms[i].height)) {
+        if(player->x >= rooms[i].x && player->x <= (rooms[i].x + rooms[i].width)) {
+            if(player->y >= rooms[i].y && player->y <= (rooms[i].y + rooms[i].height)) {
                 break;
             }
         }
@@ -333,28 +351,28 @@ int sameRoom(monster_t* monster, pc_t* pc, room_t* rooms, int numRooms) {
     return FALSE;
 }
 
-int straightLine(monster_t* monster, pc_t* pc) {
-    if(pc->x == monster->x) {
-        if(pc->y - monster->y > 0) {
-            return checkLine(monster->x, pc->x, monster->y, pc->y, 0, -1);
+int straightLine(Monster* monster, Player* player) {
+    if(player->x == monster->x) {
+        if(player->y - monster->y > 0) {
+            return checkLine(monster->x, player->x, monster->y, player->y, 0, -1);
         } else {
-            return checkLine(monster->x, pc->x, monster->y, pc->y, 0, 1);
+            return checkLine(monster->x, player->x, monster->y, player->y, 0, 1);
         }
-    } else if(pc->y == monster->y) {
-        if(pc->x - monster->x > 0) {
-            return checkLine(monster->x, pc->x, monster->y, pc->y, 1, 0);
+    } else if(player->y == monster->y) {
+        if(player->x - monster->x > 0) {
+            return checkLine(monster->x, player->x, monster->y, player->y, 1, 0);
         } else {
-            return checkLine(monster->x, pc->x, monster->y, pc->y, -1, 0);
+            return checkLine(monster->x, player->x, monster->y, player->y, -1, 0);
         }
-    } else if(pc->x - monster->x == pc->y - monster->y) {
-        if(pc->y - monster->y > 0 && pc->x - monster->x > 0) {
-            return checkLine(monster->x, pc->x, monster->y, pc->y, 1, -1);
-        } else if (pc->y - monster->y > 0 && pc->x - monster->x < 0) {
-            return checkLine(monster->x, pc->x, monster->y, pc->y, -1 , -1);
-        } else if (pc->y - monster->y < 0 && pc->x - monster->x > 0) {
-            return checkLine(monster->x, pc->x, monster->y, pc->y, -1 , 1);
+    } else if(player->x - monster->x == player->y - monster->y) {
+        if(player->y - monster->y > 0 && player->x - monster->x > 0) {
+            return checkLine(monster->x, player->x, monster->y, player->y, 1, -1);
+        } else if (player->y - monster->y > 0 && player->x - monster->x < 0) {
+            return checkLine(monster->x, player->x, monster->y, player->y, -1 , -1);
+        } else if (player->y - monster->y < 0 && player->x - monster->x > 0) {
+            return checkLine(monster->x, player->x, monster->y, player->y, -1 , 1);
         } else {
-            return checkLine(monster->x, pc->x, monster->y, pc->y, 1 , 1);
+            return checkLine(monster->x, player->x, monster->y, player->y, 1 , 1);
         }
     } else {
         return FALSE;
@@ -374,24 +392,26 @@ int checkLine(int x, int endX, int y, int endY, int dx, int dy) {
 
 #pragma mark - Distance to Player
 
-void distanceToPlayerNoTunneling(pc_t* pc, int results[][21]) {
+void distanceToPlayerNoTunneling(player_t* p, int results[][21]) {
     int i, j;
     position_t* distanceDungeon[80][21];
     colors_t colors[80][21];
     binheap_t heap;
     binheap_init(&heap, comparePosition, free);
     
+    Player* player = (Player*)p;
+    
     for(i = 0; i < 21; i++) {
         for(j = 0; j < 80; j++) {
             if(dungeon[j][i].hardness == 0) {
-                distanceDungeon[j][i] = malloc(sizeof(position_t));
+                distanceDungeon[j][i] = (position_t*)malloc(sizeof(position_t));
                 distanceDungeon[j][i]->distance = INFINITY;
 								distanceDungeon[j][i]->x = j;
 								distanceDungeon[j][i]->y = i;
                 results[j][i] = INFINITY;
                 colors[j][i] = white;
             } else {
-                distanceDungeon[j][i] = malloc(sizeof(position_t));
+                distanceDungeon[j][i] = (position_t*)malloc(sizeof(position_t));
                 distanceDungeon[j][i]->distance = INFINITY;
 								distanceDungeon[j][i]->x = j;
 								distanceDungeon[j][i]->y = i;
@@ -401,10 +421,10 @@ void distanceToPlayerNoTunneling(pc_t* pc, int results[][21]) {
         }
     }
     
-    distanceDungeon[pc->x][pc->y]->distance = 0;
-    results[pc->x][pc->y] = 0;
-    colors[pc->x][pc->y] = gray;
-    binheap_insert(&heap, distanceDungeon[pc->x][pc->y]);
+    distanceDungeon[player->x][player->y]->distance = 0;
+    results[player->x][player->y] = 0;
+    colors[player->x][player->y] = gray;
+    binheap_insert(&heap, distanceDungeon[player->x][player->y]);
     
     while(binheap_is_empty(&heap) == 0) {
         position_t* curPos = (position_t*) binheap_remove_min(&heap);
@@ -426,23 +446,25 @@ void distanceToPlayerNoTunneling(pc_t* pc, int results[][21]) {
 	binheap_delete(&heap);
 }
 
-void distanceToPlayerTunneling(pc_t* pc, int results[][21]) {
+void distanceToPlayerTunneling(player_t* p, int results[][21]) {
     int i, j;
     position_t* distanceDungeon[80][21];
     binheap_t heap;
     binheap_init(&heap, comparePosition, NULL);
     
+    Player* player = (Player*)p;
+    
     for(i = 0; i < 21; i++) {
         for(j = 0; j < 80; j++) {
-            if(i != pc->y || j != pc->x) {
-                distanceDungeon[j][i] = malloc(sizeof(position_t));
+            if(i != player->y || j != player->x) {
+                distanceDungeon[j][i] = (position_t*)malloc(sizeof(position_t));
                 distanceDungeon[j][i]->x = j;
                 distanceDungeon[j][i]->y = i;
                 distanceDungeon[j][i]->distance = INFINITY;
                 results[j][i] = INFINITY;
                 distanceDungeon[j][i]->heapNode = binheap_insert(&heap, distanceDungeon[j][i]);
             } else {
-                distanceDungeon[j][i] = malloc(sizeof(position_t));
+                distanceDungeon[j][i] = (position_t*)malloc(sizeof(position_t));
                 distanceDungeon[j][i]->x = j;
                 distanceDungeon[j][i]->y = i;
                 distanceDungeon[j][i]->distance = 0;
@@ -514,4 +536,40 @@ void deleteDistanceDungeon(position_t* positions[][21]) {
             free(positions[j][i]);;
         }
     }
+}
+
+#pragma mark - Gettters
+
+int getBehavior(const monster_t* monster){
+    return ((Monster*)monster)->behavior;
+}
+
+int getLastX(const monster_t* monster) {
+    return ((Monster*)monster)->lastX;
+}
+
+int getLastY(const monster_t* monster) {
+    return ((Monster*)monster)->lastY;
+}
+
+int getVisible(const monster_t* monster) {
+    return ((Monster*)monster)->visible;
+}
+
+#pragma mark - Setters
+
+void setBehavior(monster_t* monster, int behavior) {
+    ((Monster*)monster)->behavior = behavior;
+}
+
+void setLastX(monster_t* monster, int lastX) {
+    ((Monster*)monster)->lastX = lastX;
+}
+
+void setLastY(monster_t* monster, int lastY) {
+    ((Monster*)monster)->lastY = lastY;
+}
+
+void setVisible(monster_t* monster, int visible) {
+    ((Monster*)monster)->visible = visible;
 }

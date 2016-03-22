@@ -28,35 +28,16 @@ void drawDungeon(const char* topMessage) {
     mvprintw(0,0, "%s", topMessage);
     for(i = 0;i<21; i++) {
         for(j = 0;j<80; j++) {
-            if(dungeon[j][i].character.type == player) {
+            if(getType(dungeon[j][i].character) == player) {
                 mvprintw(i+1, j, "@");
-            } else if (dungeon[j][i].character.type == mon) {
-                mvprintw(i+1, j, "%c", getMonsterChar(dungeon[j][i].character.charID.monster->behavior));
+            } else if(getType(dungeon[j][i].character) == mon) {
+                mvprintw(i+1, j, "%c", getMonsterChar(getBehavior((monster_t*)dungeon[j][i].character)));
             } else {
                 mvprintw(i+1, j, "%c", dungeon[j][i].type);
             }
         }
     }
     refresh();
-}
-
-char getMonsterChar(int monsterID) {
-    switch (monsterID) {
-        case MONSTERA:
-            return 'A';
-        case MONSTERB:
-            return 'B';
-        case MONSTERC:
-            return 'C';
-        case MONSTERD:
-            return 'D';
-        case MONSTERE:
-            return 'E';
-        case MONSTERF:
-            return 'F';
-        default:
-            return monsterID + '0';
-    }
 }
 
 void fillDungeon() {
@@ -72,9 +53,8 @@ void fillDungeon() {
             } else {
                 dungeon[j][i].immutable = 0;
             }
-            dungeon[j][i].character.charID.player = NULL;
-            dungeon[j][i].character.charID.monster = NULL;
-            dungeon[j][i].character.type = none;
+            dungeon[j][i].character = NULL;
+            setType(dungeon[j][i].character, none);
         }
     }
 }
