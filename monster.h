@@ -9,8 +9,6 @@
 #ifndef monster_h
 #define monster_h
 
-#include <stdio.h>
-
 #include "player.h"
 
 #ifdef __cplusplus

@@ -13,7 +13,6 @@
 #include <unistd.h>
 #include <limits.h>
 
-#include "utils.h"
 #include "Dungeon.h"
 #include "monster.h"
 
