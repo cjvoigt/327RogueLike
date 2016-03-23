@@ -4,6 +4,7 @@ All notable changes to this project will be documented in this file.
 ##[0.6] - 2016-3-22
 ### Added 
 - Character C++ Class that is a superclass of Player and Monster
+- Added Fog of war
 
 ### Changed
 - Player and Monster are now implemented with C++
