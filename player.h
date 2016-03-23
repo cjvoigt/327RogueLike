@@ -29,12 +29,14 @@ void changePos(player_t* player, room_t* rooms);
 void movePlayer(player_t* player, int direction);
 void swapPlayer(player_t* p, int newX, int newY);
 
+void deletePlayer(player_t* p);
+
 # ifdef __cplusplus
 }
 
 class Player: public Character {
 public:
-        
+
 };
 # endif
 

@@ -28,6 +28,7 @@ int getSpeed(const character_t* c);
 int getDead(const character_t* c);
 characterTag_t getType(const character_t* c);
 
+character_t* setCharacters(int numMonsters);
 int getBehavior(const monster_t* monster);
 
 //Setters
@@ -38,7 +39,7 @@ void setPriority(character_t* c, int priority);
 void setSpeed(character_t* c, int speed);
 void setDead(character_t* c, int dead);
 void setType(character_t* c, characterTag_t type);
-    
+
 #ifdef __cplusplus
 }
 

@@ -17,12 +17,12 @@ void checkMonsterDeath(int x, int y);
 
 player_t* createPlayer(room_t* rooms) {
     room_t room = rooms[0];
-    
+
     int adjustment = 1;
     if(room.height > 2) {
         adjustment = 2;
     }
-    
+
     Player* player = (Player*) new Player();
     player->x = room.x + (rand() % (room.width - 2)) + 1;
     player->y = room.y + (rand() % (room.height - adjustment)) + 1;
@@ -30,7 +30,8 @@ player_t* createPlayer(room_t* rooms) {
     player->speed = 10;
     dungeon[player->x][player->y].character = ((character_t* ) player);
     dungeon[player->x][player->y].type = '<';
-    
+   ((Character*) dungeon[player->x][player->y].character)->type = pc;
+
     return (player_t*) player;
 }
 
@@ -126,4 +127,9 @@ void checkMonsterDeath(int x, int y) {
         ((Character*)dungeon[x][y].character)->dead = 1;
         ((Character*)dungeon[x][y].character)->type = none;
     }
+}
+
+void deletePlayer(player_t* p) {
+    Player* player = (Player*)p;
+    delete player;
 }
