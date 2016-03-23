@@ -35,7 +35,8 @@ int main(int argc, char* argv[]) {
     room_t* rooms = setUp(argc, argv, &numRooms, &numMonsters);
     player_t* player = createPlayer(rooms);
     character_t** characters = setUpcharacters(numMonsters, player, numRooms, rooms);
-    drawDungeon("Welcome to the Game");
+    updateVisibleDungeon(player);
+    drawVisibleDungeon("Welcome to the Game", player);
 
     binheap_t pqueue;
     binheap_init_from_array(&pqueue, characters, 8, numMonsters + 1, compareCharacters, freeCharacter);
@@ -59,13 +60,14 @@ int main(int argc, char* argv[]) {
                         player = createPlayer(rooms);
                         characters = setUpcharacters(numMonsters, player, numRooms, rooms);
                         binheap_init_from_array(&pqueue, characters, 8, numMonsters + 1, compareCharacters, freeCharacter);
-                        drawDungeon("");
+                        updateVisibleDungeon(player);
+                        drawVisibleDungeon("", player);
                         break;
                     } else if (ch == '<' || ch == '>') {
                         continue;
                     } else if (ch == 'm') {
                         drawMonsterList(characters, numMonsters);
-                        drawDungeon("");
+                        drawVisibleDungeon("", player);
                     } else if (ch == 'S') {
                         saveDungeon(numRooms, rooms);
                         break; 
@@ -81,11 +83,12 @@ int main(int argc, char* argv[]) {
                 findLineOfSightMultiple(characters, numMonsters + 1, player, rooms, numRooms);
             } else if (getType(*character) == mon) {
                 moveMonster((monster_t*)*character, player);
+                updateVisibleDungeon(player);
                 findLineOfSightSingle(*character, numMonsters + 1, player, rooms, numRooms);
            }
             setTurn(*character, getTurn(*character) + 100/getSpeed(*character));
             binheap_insert(&pqueue, character);
-            drawDungeon("");
+            drawVisibleDungeon("", player);
         } else if (getDead(*character) == 1) {
             numMonsters--;
             setTurn(*character, INT_MAX);
@@ -94,11 +97,11 @@ int main(int argc, char* argv[]) {
     }
 
     if(getDead((character_t*)player) == 1) {
-        drawDungeon("You Died! Press e to exit");
+        drawVisibleDungeon("You Died! Press e to exit", player);
     } else if(numMonsters == 0) {
-        drawDungeon("You Won! Press e to exit");
+        drawVisibleDungeon("You Won! Press e to exit", player);
     } else {
-        drawDungeon("Press e to exit");
+        drawVisibleDungeon("Press e to exit", player);
     }
 
     binheap_delete(&pqueue);
@@ -161,9 +164,12 @@ room_t* handleArgs(int* array, int* numRooms, int* numMonsters) {
     } else {
         //no load or save
         *numRooms = rand() % 5 + 6;
-        rooms = malloc(*numRooms * sizeof(room_t));
-        createDungeon(*numRooms, rooms);
-    }
+        room_t* temp = malloc(*numRooms * sizeof(room_t));
+        if(temp != NULL) {
+            rooms = temp;
+            createDungeon(*numRooms, rooms);
+        }   
+   }
 
     //handles --nummon
     if(array[2] == 1) {

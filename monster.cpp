@@ -227,7 +227,7 @@ void straightMove(Monster* monster, int tunneling) {
 void shortestMove(Monster* monster, int tunneling) {
     if(monster->lastX != INFINITY && (monster->lastX != monster->x || monster->lastY != monster->y)) {
 
-        Player* tempplayer = (Player*)malloc(sizeof(Player));
+        Player* tempplayer = new Player();
         int distanceDungeon[80][21];
 
         tempplayer->x = monster->lastX;
@@ -253,7 +253,7 @@ void shortestMove(Monster* monster, int tunneling) {
         }
 
         swapMonster(monster, x, y, tunneling);
-        free(tempplayer);
+        delete tempplayer;
     }
 }
 

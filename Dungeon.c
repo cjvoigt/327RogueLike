@@ -90,7 +90,7 @@ void createDungeon(int numRooms, room_t* rooms) {
         addRoom(rooms[i]);
     }
 
-    int r = (rand() % numRooms - 1) + 1;
+    int r = (rand() % (numRooms - 1)) + 1;
     room_t room = rooms[r];
 
     int adjustment = 1;

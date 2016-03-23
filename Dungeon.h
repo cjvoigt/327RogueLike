@@ -20,6 +20,8 @@ typedef struct cell {
     char type;
     int immutable;
     int hardness;
+    int visible;
+    int remembered;
     character_t* character;
 } cell_t;
 
