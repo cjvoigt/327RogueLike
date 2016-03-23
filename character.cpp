@@ -66,7 +66,7 @@ void setType(character_t* c, characterTag_t type) {
     ((Character *) c)->type = type;
 }
 
-character_t* setCharacters(int numMonsters) {
-    Character* characters = new Character[numMonsters + 1];
-    return (character_t*) characters;
+character_t** setCharacters(int numMonsters) {
+    Character** characters = new Character*[numMonsters + 1];
+    return (character_t**) characters;
 }

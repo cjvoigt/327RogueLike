@@ -22,7 +22,7 @@ typedef struct position {
     binheap_node_t* heapNode;
 } position_t;
 
-void drawMonsterList(character_t* characters, int numMonsters); 
+void drawMonsterList(character_t** characters, int numMonsters);
 
 /* Monster Creation */
 monster_t* createMonster(room_t* rooms, int numRooms);
@@ -31,7 +31,7 @@ monster_t* createMonster(room_t* rooms, int numRooms);
 void moveMonster(monster_t* monster, player_t* p);
 
 /* Line of Sight */
-void findLineOfSightMultiple(character_t* characters, int numChars, player_t* p, room_t* rooms, int numRooms);
+void findLineOfSightMultiple(character_t** characters, int numChars, player_t* p, room_t* rooms, int numRooms);
 void findLineOfSightSingle(character_t* character, int numChars, player_t* p, room_t* rooms, int numRooms);
     
 /* Getters */

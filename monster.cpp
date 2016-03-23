@@ -55,9 +55,9 @@ char getMonsterChar(int monsterID) {
     }
 }
 
-void drawMonsterList(character_t* characters, int numMonsters) {
+void drawMonsterList(character_t** characters, int numMonsters) {
     int i,  button, start = 1; 
-    Player* player = (Player*)&characters[0];
+    Player* player = (Player*)characters[0];
     do {
         clear();
         printw( "Monster List\n");
@@ -294,10 +294,10 @@ void checkForKill(int x, int y) {
 
 #pragma mark - Line of Sight
 
-void findLineOfSightMultiple(character_t* characters, int numChars, player_t* p, room_t* rooms, int numRooms) {
+void findLineOfSightMultiple(character_t** characters, int numChars, player_t* p, room_t* rooms, int numRooms) {
     Player* player = (Player*)p;
     for(int i = 1; i < numChars; i++) {
-        Monster* monst = (Monster*)&characters[i];
+        Monster* monst = (Monster*)characters[i];
         if(sameRoom(monst, player, rooms, numRooms) == TRUE) {
             monst->visible = 1;
             monst->lastX = player->x;

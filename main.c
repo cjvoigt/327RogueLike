@@ -16,7 +16,7 @@
 
 room_t* setUp(int argc, char * argv[], int* numRooms, int*numMonsters);
 room_t* handleArgs(int* array, int* numRooms, int* numMonsters);
-character_t* setUpcharacters(int numMonsters, player_t* player, int numRooms, room_t* rooms);
+character_t** setUpcharacters(int numMonsters, player_t* player, int numRooms, room_t* rooms);
 int32_t compareCharacters(const void *key, const void *with);
 void freeCharacter(void* key);
 void takeAction(int direction, player_t* player, int* turn);
@@ -34,20 +34,20 @@ int main(int argc, char* argv[]) {
 
     room_t* rooms = setUp(argc, argv, &numRooms, &numMonsters);
     player_t* player = createPlayer(rooms);
-    character_t* characters = setUpcharacters(numMonsters, player, numRooms, rooms);
+    character_t** characters = setUpcharacters(numMonsters, player, numRooms, rooms);
     drawDungeon("Welcome to the Game");
 
     binheap_t pqueue;
-    binheap_init_from_array(&pqueue, characters, sizeof(character_t), numMonsters + 1, compareCharacters, freeCharacter);
+    binheap_init_from_array(&pqueue, characters, 8, numMonsters + 1, compareCharacters, freeCharacter);
 
     while(numMonsters > 0 && getDead((character_t*)player) != 1) {
-        character_t* character = (character_t*)binheap_remove_min(&pqueue);
-        if (getDead(character) == 0) {
-            if(getType(character) == pc) {
+        character_t** character = (character_t**)binheap_remove_min(&pqueue);
+        if (getDead(*character) == 0) {
+            if(getType(*character) == pc) {
                 int turn = 0, ch = ' ';
                 while(turn == 0) {
                     ch = getch();
-                    char curChar = dungeon[getX(character)][getY(character)].type;
+                    char curChar = dungeon[getX(*character)][getY(*character)].type;
                     if((ch == 60 && curChar == '<') ||(ch == 62 && curChar == '>')) {
                         fillDungeon();
                         int temp[4] = {0, 0, 0, 0};
@@ -58,7 +58,7 @@ int main(int argc, char* argv[]) {
                         rooms = handleArgs(temp, &numRooms, &numMonsters);
                         player = createPlayer(rooms);
                         characters = setUpcharacters(numMonsters, player, numRooms, rooms);
-                        binheap_init_from_array(&pqueue, characters, sizeof(character_t), numMonsters + 1, compareCharacters, freeCharacter);
+                        binheap_init_from_array(&pqueue, characters, 8, numMonsters + 1, compareCharacters, freeCharacter);
                         drawDungeon("");
                         break;
                     } else if (ch == '<' || ch == '>') {
@@ -79,17 +79,17 @@ int main(int argc, char* argv[]) {
                     break;
                 }
                 findLineOfSightMultiple(characters, numMonsters + 1, player, rooms, numRooms);
-            } else if (getType(character) == mon) {
+            } else if (getType(*character) == mon) {
                 moveMonster((monster_t*)character, player);
-                findLineOfSightSingle(character, numMonsters + 1, player, rooms, numRooms);
+                findLineOfSightSingle(*character, numMonsters + 1, player, rooms, numRooms);
            }
             drawDungeon("Here");
-            setTurn(character, getTurn(character) + 100/getSpeed(character));
-            binheap_insert(&pqueue, character);
+            setTurn(*character, getTurn(*character) + 100/getSpeed(*character));
+            binheap_insert(&pqueue, *character);
             drawDungeon("");
-        } else if (getDead(character) == 1) {
+        } else if (getDead(*character) == 1) {
             numMonsters--;
-            setTurn(character, INT_MAX);
+            setTurn(*character, INT_MAX);
             binheap_insert(&pqueue, character);
         }
     }
@@ -179,11 +179,11 @@ room_t* handleArgs(int* array, int* numRooms, int* numMonsters) {
     return rooms;
 }
 
-character_t* setUpcharacters(int numMonsters, player_t* player, int numRooms, room_t* rooms) {
-    character_t* characters = setCharacters(numMonsters);
+character_t** setUpcharacters(int numMonsters, player_t* player, int numRooms, room_t* rooms) {
+    character_t** characters = setCharacters(numMonsters);
     for(int i = 1; i < numMonsters + 1; i++) {
         monster_t* monster = createMonster(rooms, numRooms);
-        characters[i] = *((character_t*)monster);
+        characters[i] = ((character_t*)monster);
     }
 
     return characters;
@@ -192,13 +192,13 @@ character_t* setUpcharacters(int numMonsters, player_t* player, int numRooms, ro
 #pragma mark - Priority Queue
 
 int32_t compareCharacters(const void *key, const void *with) {
-    character_t* character1 = (character_t*) key;
-    character_t* character2 = (character_t*) with;
+    character_t** character1 = (character_t**) key;
+    character_t** character2 = (character_t**) with;
 
-    if(getTurn(character1) - getTurn(character2) != 0) {
-        return getTurn(character1) - getTurn(character2);
+    if(getTurn(*character1) - getTurn(*character2) != 0) {
+        return getTurn(*character1) - getTurn(*character2);
     } else {
-        return getPriority(character1) - getPriority(character2);
+        return getPriority(*character1) - getPriority(*character2);
     }
 }
 
