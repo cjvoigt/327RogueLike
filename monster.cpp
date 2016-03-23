@@ -61,10 +61,10 @@ void drawMonsterList(character_t** characters, int numMonsters) {
     do {
         clear();
         printw( "Monster List\n");
-        Monster* currentMonster = ((Monster*)&characters[i]);
         for(i = start; i <= numMonsters && i <= start + 21; i++) {
+            Monster* currentMonster = ((Monster*)characters[i]);
             printw( "%d. %c, ",i, getMonsterChar(currentMonster->behavior));
-            if(player->y - currentMonster->behavior > 0) {
+            if(player->y - currentMonster->y > 0) {
                 printw("%d North and ", player->y - currentMonster->y);
             } else {
                 printw( "%d South and ", (player->y - currentMonster->y) * -1);
