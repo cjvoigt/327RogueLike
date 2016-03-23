@@ -83,6 +83,7 @@ int main(int argc, char* argv[]) {
                 moveMonster((monster_t*)character, player);
                 findLineOfSightSingle(character, numMonsters + 1, player, rooms, numRooms);
            }
+            drawDungeon("Here");
             setTurn(character, getTurn(character) + 100/getSpeed(character));
             binheap_insert(&pqueue, character);
             drawDungeon("");
