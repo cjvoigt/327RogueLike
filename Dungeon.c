@@ -85,12 +85,12 @@ void createDungeon(int numRooms, room_t* rooms) {
     for(i = 0; i < numRooms; i++) {
         rooms[i] = getRandomRoom();
         while(checkOverlappingRoom(&rooms[i]) == 0) {
-            rooms[i] =  getRandomRoom();
+            rooms[i] = getRandomRoom();
         }
         addRoom(rooms[i]);
     }
 
-    int r = (rand() % numRooms) + 1;
+    int r = (rand() % numRooms - 1) + 1;
     room_t room = rooms[r];
 
     int adjustment = 1;

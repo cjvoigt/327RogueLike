@@ -70,3 +70,13 @@ character_t** setCharacters(int numMonsters) {
     Character** characters = new Character*[numMonsters + 1];
     return (character_t**) characters;
 }
+
+void deleteCharacter(character_t* c) {
+    Character* character = (Character*) c;
+    delete character;
+}
+
+void deleteCharacterArray(character_t** c) {
+    Character** character = (Character**) c;
+    delete[] character;
+}

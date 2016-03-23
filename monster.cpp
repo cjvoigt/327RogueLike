@@ -105,6 +105,7 @@ monster_t* createMonster(room_t* rooms, int numRooms) {
     monster->lastY = INFINITY;
     monster->dead = 0;
     monster->visible = 0;
+    monster->speed = (rand() % 16) + 5;
     dungeon[monster->x][monster->y].character = ((character_t*) monster);
     ((Character*)dungeon[monster->x][monster->y].character)->type = mon;
     return (monster_t*)monster;
@@ -211,7 +212,7 @@ void straightMove(Monster* monster, int tunneling) {
     if(monster->visible != 1) {
         return;
     }
-    
+
     if (monster->x < monster->lastX && (dungeon[monster->x + 1][monster->y].type != ' ' || tunneling == 1)) {
         swapMonster(monster, monster->x + 1, monster->y, tunneling);
     } else if (monster->x > monster->lastX && (dungeon[monster->x - 1][monster->y].type != ' ' || tunneling == 1)) {
@@ -266,7 +267,6 @@ void swapMonster(Monster* monster, int newX, int newY, int tunneling) {
         dungeon[newX][newY].character = (character_t*)monster;
         ((Character*)dungeon[newX][newY].character)->type = mon;
         dungeon[monster->x][monster->y].character = NULL;
-        ((Character*)dungeon[monster->x][monster->y].character)->type = none;
         monster->x = newX;
         monster->y = newY;
     } else {
@@ -274,7 +274,6 @@ void swapMonster(Monster* monster, int newX, int newY, int tunneling) {
             dungeon[newX][newY].character = (character_t*)monster;
             ((Character*)dungeon[newX][newY].character)->type = mon;
             dungeon[monster->x][monster->y].character = NULL;
-            ((Character*)dungeon[monster->x][monster->y].character)->type = none;
             monster->x = newX;
             monster->y = newY;
         }
@@ -283,10 +282,7 @@ void swapMonster(Monster* monster, int newX, int newY, int tunneling) {
 
 void checkForKill(int x, int y) {
     Character* currentCharacter = (Character*)dungeon[x][y].character;
-    if(currentCharacter->type == mon) {
-        currentCharacter->dead = 1;
-        currentCharacter->type = none;
-    } else if(currentCharacter->type == pc) {
+    if(currentCharacter != NULL) {
         currentCharacter->dead = 1;
         currentCharacter->type = none;
     }

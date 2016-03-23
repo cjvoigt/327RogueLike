@@ -116,16 +116,17 @@ void swapPlayer(player_t* p, int newX, int newY) {
         dungeon[player->x + newX][player->y + newY].character = ((character_t* ) player);
         ((Character*)dungeon[player->x][player->y].character)->type = pc;
         dungeon[player->x][player->y].character = NULL;
-        ((Character*)dungeon[player->x][player->y].character)->type = none;
         player->x += newX;
         player->y += newY;
     }
 }
 
 void checkMonsterDeath(int x, int y) {
-    if(((Character*)dungeon[x][y].character)->type == mon) {
-        ((Character*)dungeon[x][y].character)->dead = 1;
-        ((Character*)dungeon[x][y].character)->type = none;
+    if(dungeon[x][y].character != NULL) {
+        if(((Character*)dungeon[x][y].character)->type == mon) {
+            ((Character*)dungeon[x][y].character)->dead = 1;
+            ((Character*)dungeon[x][y].character)->type = none;
+        }
     }
 }
 

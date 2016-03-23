@@ -51,11 +51,11 @@ int main(int argc, char* argv[]) {
                     if((ch == 60 && curChar == '<') ||(ch == 62 && curChar == '>')) {
                         fillDungeon();
                         int temp[4] = {0, 0, 0, 0};
+                        binheap_insert(&pqueue, character);
                         binheap_delete(&pqueue);
-                        deletePlayer(player);
-                        free(characters);
+                        deleteCharacterArray(characters);
                         free(rooms);
-                       rooms = handleArgs(temp, &numRooms, &numMonsters);
+                        rooms = handleArgs(temp, &numRooms, &numMonsters);
                         player = createPlayer(rooms);
                         characters = setUpcharacters(numMonsters, player, numRooms, rooms);
                         binheap_init_from_array(&pqueue, characters, 8, numMonsters + 1, compareCharacters, freeCharacter);
@@ -80,12 +80,11 @@ int main(int argc, char* argv[]) {
                 }
                 findLineOfSightMultiple(characters, numMonsters + 1, player, rooms, numRooms);
             } else if (getType(*character) == mon) {
-                moveMonster((monster_t*)character, player);
+                moveMonster((monster_t*)*character, player);
                 findLineOfSightSingle(*character, numMonsters + 1, player, rooms, numRooms);
            }
-            drawDungeon("Here");
             setTurn(*character, getTurn(*character) + 100/getSpeed(*character));
-            binheap_insert(&pqueue, *character);
+            binheap_insert(&pqueue, character);
             drawDungeon("");
         } else if (getDead(*character) == 1) {
             numMonsters--;
@@ -103,7 +102,7 @@ int main(int argc, char* argv[]) {
     }
 
     binheap_delete(&pqueue);
-    free(characters);
+    deleteCharacterArray(characters);
     free(rooms);
 
     int end = 0;
@@ -162,10 +161,7 @@ room_t* handleArgs(int* array, int* numRooms, int* numMonsters) {
     } else {
         //no load or save
         *numRooms = rand() % 5 + 6;
-        room_t* temp = malloc(*numRooms * sizeof(room_t));
-        if(temp != NULL) {
-            rooms = temp;
-        }
+        rooms = malloc(*numRooms * sizeof(room_t));
         createDungeon(*numRooms, rooms);
     }
 
@@ -204,8 +200,8 @@ int32_t compareCharacters(const void *key, const void *with) {
 }
 
 void freeCharacter(void* key) {
-    character_t* character = (character_t*) key;
-    free(character);
+    character_t** character = (character_t**) key;
+    deleteCharacter(*character);
 }
 
 void takeAction(int direction, player_t* player, int* turn) {

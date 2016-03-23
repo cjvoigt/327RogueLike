@@ -29,6 +29,8 @@ int getDead(const character_t* c);
 characterTag_t getType(const character_t* c);
 
 character_t** setCharacters(int numMonsters);
+void deleteCharacter(character_t* c);
+void deleteCharacterArray(character_t** c);
 int getBehavior(const monster_t* monster);
 
 //Setters
