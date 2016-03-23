@@ -47,7 +47,9 @@ void drawDungeon(const char* topMessage) {
     mvprintw(0,0, "%s", topMessage);
     for(i = 0;i<21; i++) {
         for(j = 0;j<80; j++) {
-            if(getType(dungeon[j][i].character) == pc) {
+            if(dungeon[j][i].character == NULL) {
+                mvprintw(i+1, j, "%c", dungeon[j][i].type);
+            } else if(getType(dungeon[j][i].character) == pc) {
                 mvprintw(i+1, j, "@");
             } else if(getType(dungeon[j][i].character) == mon) {
                 mvprintw(i+1, j, "%c", getMonsterChar(getBehavior((monster_t*)dungeon[j][i].character)));
@@ -73,7 +75,6 @@ void fillDungeon() {
                 dungeon[j][i].immutable = 0;
             }
             dungeon[j][i].character = NULL;
-            setType(dungeon[j][i].character, none);
         }
     }
 }

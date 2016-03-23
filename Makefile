@@ -1,5 +1,5 @@
 main: main.o Dungeon.o character.o player.o monster.o binheap.o
-	gcc -Wall -Werror  main.o Dungeon.o character.o player.o monster.o binheap.o -o main -lncurses
+	g++ -Wall -Werror  main.o Dungeon.o character.o player.o monster.o binheap.o -o main -lncurses
 
 main.o: main.c
 	gcc -ggdb main.c -c

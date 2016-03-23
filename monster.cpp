@@ -93,10 +93,10 @@ monster_t* createMonster(room_t* rooms, int numRooms) {
     int randRoomNumber = (rand() % (numRooms - 1)) + 1;
     room_t room = rooms[randRoomNumber];
 
-    Monster* monster = (Monster*) malloc(sizeof(Monster));
+    Monster* monster = new Monster();
     monster->x = room.x + rand() % room.width;
     monster->y = room.y + rand() % room.height;
-    while(((Character*)dungeon[monster->x][monster->y].character)->type == pc || ((Character*)dungeon[monster->x][monster->y].character)->type == mon) {
+    while(dungeon[monster->x][monster->y].character != NULL) {
         monster->x = room.x + rand() % room.width;
         monster->y = room.y + rand() % room.height;
     }

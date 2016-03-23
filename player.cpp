@@ -23,7 +23,7 @@ player_t* createPlayer(room_t* rooms) {
         adjustment = 2;
     }
     
-    Player* player = (Player*) malloc(sizeof(Player));
+    Player* player = (Player*) new Player();
     player->x = room.x + (rand() % (room.width - 2)) + 1;
     player->y = room.y + (rand() % (room.height - adjustment)) + 1;
     player->dead = 0;
