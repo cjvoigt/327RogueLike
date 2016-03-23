@@ -1,1 +1,1 @@
-This project is a rogue like game in the terminal. It will include dungeons, monsters, and items that are randomly generated. When the player dies they restart from level one with nothing.
+This project is a rogue like game in the terminal currently written in a mixture of C and C++.. It will include dungeons, monsters, and items that are randomly generated. The player will then have to traverse dungeons until reaching the end. When the player dies they restart from level one with nothing.

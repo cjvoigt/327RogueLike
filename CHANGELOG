@@ -1,8 +1,24 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+##[0.6] - 2016-3-22
+### Added 
+- Character C++ Class that is a superclass of Player and Monster
+
+### Changed
+- Player and Monster are now implemented with C++
+- All C code changed to call C++ classes
+
+##[0.5] - 2016-3-8
+### Added 
+- Player can be controlled by user
+- Can go up and down stairs
+- Can see a list of the monsters on screen by pressing m
+- Can exit game by pressing S
+- Pressing space skips the player’s turn
+
 ##[0.4] - 2016-2-23
-### Adde
+### Added
 - Monster implementation and header files
 - Monsters spawns
 - Monster Chases player
@@ -10,13 +26,10 @@ All notable changes to this project will be documented in this file.
 - PlayerCharacter now moves around at random
 - Priority Queue for so the monster and player go at the right time
 
-##Changed
+### Changed
 - Moved distance for player to monster
 - Moved a lot of structs to utils.h
 - Restructured some code to make it work better
-
-##Bugs
-- Still need to implement all of the Monsters
 
 ##[0.3] - 2016-2-6
 ### Added
@@ -24,13 +37,13 @@ All notable changes to this project will be documented in this file.
 - Finding distances from player
 - Randomly placing player in a room
 
-## Changed
+### Changed
 - Things passed into start up function are now pointers
 
-## Bugs
+### Bugs
 - Fixed a bug where rooms wouldn’t be connected
 
-## [0.2] - 2016-1-31
+##[0.2] - 2016-1-31
 ### Added
 — Saving dungeons
 - Loading Dungeons
