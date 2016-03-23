@@ -55,7 +55,7 @@ int main(int argc, char* argv[]) {
                         deletePlayer(player);
                         free(characters);
                         free(rooms);
-                        rooms = handleArgs(temp, &numRooms, &numMonsters);
+                       rooms = handleArgs(temp, &numRooms, &numMonsters);
                         player = createPlayer(rooms);
                         characters = setUpcharacters(numMonsters, player, numRooms, rooms);
                         binheap_init_from_array(&pqueue, characters, 8, numMonsters + 1, compareCharacters, freeCharacter);
@@ -181,6 +181,7 @@ room_t* handleArgs(int* array, int* numRooms, int* numMonsters) {
 
 character_t** setUpcharacters(int numMonsters, player_t* player, int numRooms, room_t* rooms) {
     character_t** characters = setCharacters(numMonsters);
+    characters[0] = (character_t*)player;
     for(int i = 1; i < numMonsters + 1; i++) {
         monster_t* monster = createMonster(rooms, numRooms);
         characters[i] = ((character_t*)monster);
