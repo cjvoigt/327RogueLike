@@ -55,7 +55,7 @@ int main(int argc, char* argv[]) {
                         binheap_insert(&pqueue, character);
                         binheap_delete(&pqueue);
                         deleteCharacterArray(characters);
-                        free(rooms);
+                        free(rooms)
                         rooms = handleArgs(temp, &numRooms, &numMonsters);
                         player = createPlayer(rooms);
                         characters = setUpcharacters(numMonsters, player, numRooms, rooms);
