@@ -128,23 +128,23 @@ int addRoom(room_t *room) {
 
 room_t getRandomRoom() {
     room_t room;
-    
+
     room.width = rand() % 15 + 3;
     room.height = rand() % 8 + 2;
-    
+
     room.x = rand() % (78 - room.width) + 1;
     room.y = rand() % (19 - room.height) + 1;
-    
+
     room.centerX = findCenter((room.x + room.width) - room.x) + room.x;
     room.centerY = findCenter((room.y + room.height) - room.y) + room.y;
-    
+
     return room;
 }
 
 int checkOverlappingRoom(room_t *room) {
     int i = room->y, j = room->x;
     int endX = j + room->width + 2, endY = i + room->height + 2;
-    
+
     for(;i<endY;i++) {
         for(j = room->x;j<endX;j++) {
             if (dungeon[j - 1][i - 1].immutable == 1) {
@@ -152,7 +152,7 @@ int checkOverlappingRoom(room_t *room) {
             }
         }
     }
-    
+
     return 1;
 }
 
@@ -171,10 +171,10 @@ int findCenter(int num) {
 void addCorridor(room_t *startRoom, room_t *endRoom) {
     int startX, startY;
     int endX, endY;
-    
+
     getPoint(startRoom, endRoom, &startX, &startY);
     getPoint(endRoom, startRoom, &endX, &endY);
-    
+
     int x = goHorizontal(startX, endX, &startY);
     goVertical(startY, endY, x);
 }
@@ -182,7 +182,7 @@ void addCorridor(room_t *startRoom, room_t *endRoom) {
 void getPoint(room_t* startRoom, room_t* nextRoom, int* x, int* y) {
     int disX = abs(startRoom->centerX - nextRoom->centerX);
     int disY = abs(startRoom->centerY - nextRoom->centerY);
-    
+
     if(disX < disY){
         if(startRoom->centerX - nextRoom->centerX < 0) {
             *y = rand() % startRoom->height + startRoom->y;
@@ -212,7 +212,7 @@ void getPoint(room_t* startRoom, room_t* nextRoom, int* x, int* y) {
 
 int goHorizontal(int startX, int endX, int *y) {
     int i = 0;
-    
+
     if (startX < endX) {
         for(i = startX; i <= endX; i++){
             if(dungeon[i][*y].immutable != 1) {
@@ -220,7 +220,7 @@ int goHorizontal(int startX, int endX, int *y) {
                 dungeon[i][*y].hardness = 0;
             }
             int newY = turn(*y);
-            
+ 
             if(newY != 0 ) {
                 *y += newY;
                 if(dungeon[i][*y].immutable != 1) {
@@ -236,7 +236,7 @@ int goHorizontal(int startX, int endX, int *y) {
                 dungeon[i][*y].hardness = 0;
             }
             int newY = turn(*y);
-            
+
             if(newY != 0 ) {
                 *y += newY;
                 if(dungeon[i][*y].immutable != 1) {
