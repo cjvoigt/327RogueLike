@@ -168,7 +168,7 @@ room_t* handleArgs(int* array, int* numRooms, int* numMonsters) {
         if(temp != NULL) {
             rooms = temp;
             createDungeon(*numRooms, rooms);
-        }   
+        } 
    }
 
     //handles --nummon
