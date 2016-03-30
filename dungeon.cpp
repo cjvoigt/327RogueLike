@@ -6,7 +6,11 @@
 //  Copyright © 2016 Camden Voigt. All rights reserved.
 //
 
-#include "Dungeon.h"
+#include "dungeon.h"
+#include <string>
+#include <fstream>
+
+using namespace std;
 
 cell_t dungeon[80][21];
 
@@ -17,7 +21,7 @@ int findCenter(int num);
 int goHorizontal(int startX, int endX, int *y);
 void goVertical(int startY, int endY, int x);
 int turn(int currentY);
-char* getFilePath();
+string getFilePath();
 void redrawDungeon();
 
 #pragma mark - Full Dungeon
@@ -87,7 +91,7 @@ void createDungeon(int numRooms, room_t* rooms) {
         while(checkOverlappingRoom(&rooms[i]) == 0) {
             rooms[i] = getRandomRoom();
         }
-        addRoom(rooms[i]);
+        addRoom(&rooms[i]);
     }
 
     int r = (rand() % (numRooms - 1)) + 1;
@@ -106,7 +110,7 @@ void createDungeon(int numRooms, room_t* rooms) {
     for(j = 0; j < numRooms-1; j++){
         addCorridor(&rooms[j], &rooms[j+1]);
     }
-    
+
     printf("\n\n\n");
 }
 
@@ -114,7 +118,7 @@ void createDungeon(int numRooms, room_t* rooms) {
 
 int addRoom(room_t *room) {
     int i = room->y, j = room->x, endX = j + room->width, endY = i + room->height;
-    
+
     for(;i<endY;i++) {
         for(j = room->x;j<endX;j++) {
             dungeon[j][i].type = '.';
@@ -122,7 +126,7 @@ int addRoom(room_t *room) {
             dungeon[j][i].hardness = 0;
         }
     }
-    
+
     return 0;
 }
 
@@ -162,7 +166,7 @@ int findCenter(int num) {
     } else {
         return num/2;
     }
-    
+
     return 0;
 }
 
@@ -248,13 +252,13 @@ int goHorizontal(int startX, int endX, int *y) {
     } else {
         return startX;
     }
-    
+
     return i;
 }
 
 void goVertical(int startY, int endY, int x) {
     int i = 0;
-    
+
     if (startY > endY) {
         for(i = startY; i >= endY; i--) {
             if(dungeon[x][i].immutable != 1) {
@@ -302,26 +306,25 @@ void saveDungeon(int numRooms, room_t *rooms) {
     uint32_t size = 1496 + (numRooms * 4);
     uint32_t besize = 0, beversion = 0;
 
-    char* fullPath = getFilePath();
-    FILE* fp = fopen(fullPath , "wb+");
-    free(fullPath);
+    string fullPath = getFilePath();
+    FILE* fp = fopen(fullPath.c_str(), "wb+");
 
     if(fp == NULL) {
        printf("File could not be found for saving\n");
        return;
     }
-    
+
     //write file marker
     fwrite(fileMarker, 1, sizeof(fileMarker) - 1, fp);
-    
+
     //write version number
     beversion = htobe32(version);
     fwrite(&beversion, sizeof(beversion), 1, fp);
-    
+
     //write size
     besize = htobe32(size);
     fwrite(&besize, sizeof(besize), 1, fp);
-    
+
     //write dungeon
     int i, j;
     for(i = 1; i < 20; i++) {
@@ -329,7 +332,7 @@ void saveDungeon(int numRooms, room_t *rooms) {
             fwrite(&dungeon[j][i].hardness, 1, 1, fp);
         }
     }
-    
+
     //write rooms
     int k;
     for(k = 0; k < numRooms; k++) {
@@ -339,26 +342,25 @@ void saveDungeon(int numRooms, room_t *rooms) {
         fwrite(&width, 1, 1, fp);
         fwrite(&height, 1, 1, fp);
     }
-    
+
     //close file
     fclose(fp);
 }
 
 room_t* loadDungeon(int* numRooms) {
     //open file
-    char* fullPath = getFilePath();
-    FILE* fp = fopen(fullPath , "rb+");
-    free(fullPath);
+    string fullPath = getFilePath();
+    FILE* fp = fopen(fullPath.c_str(), "rb+");
 
     if(fp == NULL) {
         printf("File Cannot be found for loading\n");
         return NULL;
     }
-    
+
     //Get FileMarker
     char fileMarker[7];
     fread(fileMarker, 1, sizeof(fileMarker) - 1, fp);
-    
+
     //get version and size
     uint32_t beversion, besize;
     uint32_t version, size;
@@ -366,7 +368,7 @@ room_t* loadDungeon(int* numRooms) {
     fread(&besize, 4, 1, fp);
     version = be32toh(beversion);
     size = be32toh(besize);
-    
+
     //get dungeon
     int i, j;
     for(i = 1; i < 20; i++) {
@@ -374,11 +376,11 @@ room_t* loadDungeon(int* numRooms) {
             fread(&dungeon[j][i].hardness, 1, 1, fp);
         }
     }
-    
+
     //get rooms
     int k;
     *numRooms = (size - 1496)/4;
-    room_t* rooms = malloc(*numRooms * sizeof(room_t));
+    room_t* rooms = (room_t *) malloc(*numRooms * sizeof(room_t));
     for(k = 0; k < *numRooms; k++) {
         uint8_t buffer[4];
         fread(buffer, 1, 4, fp);
@@ -390,20 +392,17 @@ room_t* loadDungeon(int* numRooms) {
         addRoom(&room);
         rooms[k] = room;
     }
-    
+
     redrawDungeon();
-    
+
     fclose(fp);
     return rooms;
 }
 
-char* getFilePath() {
-    char* homePath = getenv("HOME");
-    char* filePath = "/.rlg327/dungeon";
-    long length = strlen(homePath) + strlen(filePath) + 1;
-    char* fullPath = malloc(length);
-    snprintf(fullPath, length, "%s%s", homePath, filePath);
-    return fullPath;
+string getFilePath() {
+    string homePath = getenv("HOME");
+    homePath += "/.rlg327/dungeon";
+    return homePath;
 }
 
 void redrawDungeon() {

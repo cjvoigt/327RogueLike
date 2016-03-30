@@ -16,7 +16,7 @@
 
 #define TRUE 1
 #define FALSE 0
-#i:define INFINITY 255
+#define INFINITY 255
 
 #define MONSTER0 0x0
 #define MONSTER1 0x1
