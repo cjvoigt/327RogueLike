@@ -33,7 +33,7 @@ void fillDungeon();
 void createDungeon(int numRooms, room_t* rooms);
 
 /* Rooms */
-int addRoom();
+int addRoom(room_t *room);
 room_t getRandomRoom();
 int checkOverlappingRoom(room_t* room);
 
@@ -42,6 +42,6 @@ void addCorridor(room_t *startRoom, room_t *endRoom);
 
 /* File I/O */
 void saveDungeon(int numRooms, room_t *rooms);
-room_t* loadDungeon();
+room_t* loadDungeon(int* numRooms);
 
 #endif /* Dungeon_h */

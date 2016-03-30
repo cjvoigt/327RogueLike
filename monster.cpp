@@ -36,7 +36,7 @@ int adjustHardness(int current);
 
 #pragma mark - Monster Printing
 
-char getMonsterChar(int monsterID) {
+char getMonsterCharMonster(int monsterID) {
     switch (monsterID) {
         case MONSTERA:
             return 'A';
@@ -63,7 +63,7 @@ void drawMonsterList(character_t** characters, int numMonsters) {
         printw( "Monster List\n");
         for(i = start; i <= numMonsters && i <= start + 21; i++) {
             Monster* currentMonster = ((Monster*)characters[i]);
-            printw( "%d. %c, ",i, getMonsterChar(currentMonster->behavior));
+            printw( "%d. %c, ",i, getMonsterCharMonster(currentMonster->behavior));
             if(player->y - currentMonster->y > 0) {
                 printw("%d North and ", player->y - currentMonster->y);
             } else {

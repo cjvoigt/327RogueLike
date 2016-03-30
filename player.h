@@ -12,7 +12,7 @@
 #include <stdint.h>
 
 #include "character.h"
-#include "Dungeon.h"
+#include "dungeon.h"
 
 # ifdef __cplusplus
 extern "C" {
